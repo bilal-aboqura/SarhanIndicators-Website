@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول — Sarhan Indicators</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="stylesheet" href="/src/index.css">
+    <script type="module" src="/src/i18n.js"></script>
+    <script type="module" src="/src/components.js"></script>
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(var(--navbar-height) + var(--sp-2xl)) var(--sp-lg) var(--sp-2xl);
+            background: radial-gradient(circle at 50% 0%, rgba(30,41,59,0.4) 0%, transparent 70%);
+        }
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+        }
+        .auth-card {
+            background: var(--clr-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-xl);
+            padding: var(--sp-3xl);
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--sp-2xl);
+        }
+        .auth-header h1 {
+            font-size: var(--fs-h2);
+            font-weight: var(--fw-bold);
+            margin-bottom: var(--sp-sm);
+        }
+        .auth-header p {
+            color: var(--clr-text-secondary);
+            font-size: var(--fs-small);
+        }
+        .form-group {
+            margin-bottom: var(--sp-lg);
+        }
+        .form-group label {
+            display: block;
+            font-size: var(--fs-small);
+            font-weight: var(--fw-semibold);
+            color: var(--clr-text-secondary);
+            margin-bottom: var(--sp-sm);
+        }
+        .form-group input {
+            width: 100%;
+            padding: var(--sp-md) var(--sp-lg);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            color: var(--clr-text);
+            font-size: var(--fs-body);
+            transition: all var(--trans-fast);
+        }
+        .form-group input:focus {
+            border-color: var(--clr-accent);
+            background: rgba(255,255,255,0.06);
+            box-shadow: 0 0 0 3px rgba(91,141,239,0.1);
+        }
+        .form-group input::placeholder {
+            color: var(--clr-text-muted);
+        }
+        .auth-submit {
+            width: 100%;
+            padding: var(--sp-md) var(--sp-xl);
+            border-radius: var(--radius-pill);
+            font-weight: var(--fw-semibold);
+            font-size: var(--fs-body);
+            transition: all var(--trans-base);
+            background: var(--grad-accent);
+            color: white;
+            box-shadow: var(--shadow-glow-accent);
+            cursor: pointer;
+            border: none;
+        }
+        .auth-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(91,141,239,0.35);
+        }
+        .auth-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--sp-xl);
+            font-size: var(--fs-small);
+            color: var(--clr-text-secondary);
+        }
+        .auth-footer a {
+            color: var(--clr-accent);
+            font-weight: var(--fw-semibold);
+            transition: color var(--trans-fast);
+        }
+        .auth-footer a:hover {
+            color: var(--clr-primary-light);
+        }
+        .auth-error {
+            background: rgba(255,68,68,0.1);
+            border: 1px solid rgba(255,68,68,0.2);
+            border-radius: var(--radius-md);
+            padding: var(--sp-md);
+            margin-bottom: var(--sp-lg);
+            color: #ff6b6b;
+            font-size: var(--fs-small);
+            display: none;
+        }
+        .auth-back {
+            position: absolute;
+            top: calc(var(--navbar-height) + var(--sp-lg));
+            right: var(--sp-xl);
+            color: var(--clr-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: var(--sp-sm);
+            font-size: var(--fs-small);
+            transition: color var(--trans-fast);
+        }
+        html[dir="ltr"] .auth-back {
+            right: auto;
+            left: var(--sp-xl);
+        }
+        .auth-back:hover { color: white; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div id="navbar-placeholder"></div>
+
+        <div class="auth-page">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h1 data-i18n="login.title">تسجيل الدخول</h1>
+                        <p data-i18n="login.subtitle">ادخل بياناتك للوصول إلى حسابك</p>
+                    </div>
+
+                    <div class="auth-error" id="errorMsg"></div>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label data-i18n="login.emailLabel">البريد الإلكتروني</label>
+                            <input type="email" id="email" required data-i18n-placeholder="login.emailLabel" placeholder="البريد الإلكتروني">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="login.passwordLabel">كلمة المرور</label>
+                            <input type="password" id="password" required data-i18n-placeholder="login.passwordLabel" placeholder="كلمة المرور">
+                        </div>
+                        <button type="submit" class="auth-submit" id="submitBtn" data-i18n="login.submit">تسجيل الدخول</button>
+                    </form>
+
+                    <div class="auth-footer">
+                        <span data-i18n="login.noAccount">ما عندك حساب؟</span>
+                        <a href="/register" data-i18n="login.createAccount">إنشاء حساب جديد</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('loginForm');
+            const errorMsg = document.getElementById('errorMsg');
+            const submitBtn = document.getElementById('submitBtn');
+            const t = () => window.i18n ? window.i18n.t : (k) => k;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorMsg.style.display = 'none';
+                const tFn = t();
+                submitBtn.textContent = tFn('login.submitting');
+                submitBtn.disabled = true;
+
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: document.getElementById('email').value,
+                            password: document.getElementById('password').value
+                        })
+                    });
+
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.message || tFn('login.invalidCredentials'));
+                    }
+
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                    // Check for return URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const returnUrl = urlParams.get('return');
+                    window.location.href = returnUrl || '/';
+                } catch (err) {
+                    errorMsg.textContent = err.message || t()('login.connectionError');
+                    errorMsg.style.display = 'block';
+                    submitBtn.textContent = t()('login.submit');
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

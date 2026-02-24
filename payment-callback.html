@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حالة الدفع — Sarhan Indicators</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="stylesheet" href="/src/index.css">
+    <script type="module" src="/src/i18n.js"></script>
+    <script type="module" src="/src/components.js"></script>
+    <style>
+        .callback-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(var(--navbar-height) + var(--sp-2xl)) var(--sp-lg) var(--sp-2xl);
+            background: radial-gradient(circle at 50% 0%, rgba(30,41,59,0.4) 0%, transparent 70%);
+        }
+        .callback-container {
+            width: 100%;
+            max-width: 480px;
+        }
+        .callback-card {
+            background: var(--clr-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-xl);
+            padding: var(--sp-3xl);
+            text-align: center;
+        }
+        .callback-icon {
+            font-size: 3rem;
+            margin-bottom: var(--sp-lg);
+        }
+        .callback-card h2 {
+            font-size: var(--fs-h2);
+            font-weight: var(--fw-bold);
+            margin-bottom: var(--sp-md);
+        }
+        .callback-card p {
+            color: var(--clr-text-secondary);
+            margin-bottom: var(--sp-xl);
+            line-height: 1.7;
+        }
+        .callback-form {
+            text-align: start;
+        }
+        .form-group {
+            margin-bottom: var(--sp-lg);
+        }
+        .form-group label {
+            display: block;
+            font-size: var(--fs-small);
+            font-weight: var(--fw-semibold);
+            color: var(--clr-text-secondary);
+            margin-bottom: var(--sp-sm);
+        }
+        .form-group input {
+            width: 100%;
+            padding: var(--sp-md) var(--sp-lg);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            color: var(--clr-text);
+            font-size: var(--fs-body);
+            transition: all var(--trans-fast);
+        }
+        .form-group input:focus {
+            border-color: var(--clr-accent);
+            background: rgba(255,255,255,0.06);
+            box-shadow: 0 0 0 3px rgba(91,141,239,0.1);
+        }
+        .form-group input::placeholder {
+            color: var(--clr-text-muted);
+        }
+        .callback-submit {
+            width: 100%;
+            padding: var(--sp-md) var(--sp-xl);
+            border-radius: var(--radius-pill);
+            font-weight: var(--fw-semibold);
+            font-size: var(--fs-body);
+            transition: all var(--trans-base);
+            background: var(--grad-primary);
+            color: white;
+            box-shadow: var(--shadow-glow-primary);
+            cursor: pointer;
+            border: none;
+        }
+        .callback-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(0,201,167,0.35);
+        }
+        .callback-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .callback-error,
+        .callback-success-msg {
+            border-radius: var(--radius-md);
+            padding: var(--sp-md);
+            margin-bottom: var(--sp-lg);
+            font-size: var(--fs-small);
+            display: none;
+        }
+        .callback-error {
+            background: rgba(255,68,68,0.1);
+            border: 1px solid rgba(255,68,68,0.2);
+            color: #ff6b6b;
+        }
+        .callback-success-msg {
+            background: rgba(0,201,167,0.1);
+            border: 1px solid rgba(0,201,167,0.2);
+            color: #00c9a7;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--clr-accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--sp-lg);
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .state-view { display: none; }
+        .state-view.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div id="navbar-placeholder"></div>
+
+        <div class="callback-page">
+            <div class="callback-container">
+                <div class="callback-card">
+                    <!-- Loading State -->
+                    <div id="loadingState" class="state-view active">
+                        <div class="loading-spinner"></div>
+                        <h2 data-i18n="payment.verifying">جاري التحقق من الدفع...</h2>
+                        <p data-i18n="payment.verifyingDesc">يرجى الانتظار بينما نتحقق من عملية الدفع</p>
+                    </div>
+
+                    <!-- Success State -->
+                    <div id="successState" class="state-view">
+                        <div class="callback-icon">🎉</div>
+                        <h2 data-i18n="payment.successTitle">تم الدفع بنجاح! 🎉</h2>
+                        <p id="successDesc" data-i18n="payment.successDesc">تم تفعيل اشتراكك بنجاح. أدخل اسم مستخدم TradingView الخاص بك لتفعيل المؤشرات على حسابك.</p>
+
+                        <div class="callback-error" id="formError"></div>
+                        <div class="callback-success-msg" id="formSuccess"></div>
+
+                        <form class="callback-form" id="activateForm">
+                            <div class="form-group" id="tvGroup">
+                                <label data-i18n="payment.tvLabel">اسم مستخدم TradingView</label>
+                                <input type="text" id="tvUsername" required placeholder="TradingView username">
+                            </div>
+                            <div class="form-group">
+                                <label data-i18n="payment.telegramLabel">رقم (ID) التليجرام الخاص بك</label>
+                                <input type="text" id="telegramId" required placeholder="Telegram ID">
+                            </div>
+                            <button type="submit" class="callback-submit" id="activateBtn" data-i18n="payment.activateBtn">تفعيل الاشتراك</button>
+                        </form>
+
+                        <div style="margin-top: var(--sp-xl);">
+                            <a href="/" class="btn btn-outline" data-i18n="payment.backHome">العودة للرئيسية</a>
+                        </div>
+                    </div>
+
+                    <!-- Failure State -->
+                    <div id="failState" class="state-view">
+                        <div class="callback-icon">❌</div>
+                        <h2 data-i18n="payment.failTitle">فشل الدفع</h2>
+                        <p data-i18n="payment.failDesc">عذرًا، لم تتم عملية الدفع بنجاح. يمكنك المحاولة مرة أخرى أو التواصل مع الدعم.</p>
+                        <a href="/#pricing" class="btn btn-primary" data-i18n="payment.retry">حاول مرة أخرى</a>
+                        <div style="margin-top: var(--sp-lg);">
+                            <a href="/" class="btn btn-outline" data-i18n="payment.backHome">العودة للرئيسية</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const t = () => window.i18n ? window.i18n.t : (k) => k;
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentStatus = urlParams.get('paymentStatus') || urlParams.get('status');
+            const orderId = urlParams.get('merchantOrderId') || urlParams.get('orderId');
+
+            function showState(stateId) {
+                document.querySelectorAll('.state-view').forEach(el => el.classList.remove('active'));
+                document.getElementById(stateId).classList.add('active');
+            }
+
+            // Determine state
+            setTimeout(() => {
+                if (paymentStatus === 'SUCCESS' || paymentStatus === 'success') {
+                    showState('successState');
+
+                    // Check if user already has TradingView username
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (user.tradingViewUsername) {
+                        document.getElementById('tvUsername').value = user.tradingViewUsername;
+                    }
+                } else {
+                    showState('failState');
+                }
+            }, 1500);
+
+            // Handle form submission
+            const form = document.getElementById('activateForm');
+            const formError = document.getElementById('formError');
+            const formSuccess = document.getElementById('formSuccess');
+            const activateBtn = document.getElementById('activateBtn');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                formError.style.display = 'none';
+                formSuccess.style.display = 'none';
+                const tFn = t();
+
+                const tvUsername = document.getElementById('tvUsername').value.trim();
+                const telegramId = document.getElementById('telegramId').value.trim();
+
+                if (!tvUsername || !telegramId) {
+                    formError.textContent = tFn('payment.allFieldsRequired');
+                    formError.style.display = 'block';
+                    return;
+                }
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    formError.textContent = tFn('payment.loginRequired');
+                    formError.style.display = 'block';
+                    return;
+                }
+
+                activateBtn.textContent = tFn('payment.saving');
+                activateBtn.disabled = true;
+
+                try {
+                    // Save TradingView username
+                    const tvRes = await fetch('/api/auth/tradingview-username', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ tradingViewUsername: tvUsername })
+                    });
+
+                    if (!tvRes.ok) throw new Error(tFn('payment.saveError'));
+
+                    // Save Telegram ID
+                    const tgRes = await fetch('/api/payment/telegram-id', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ telegramId, orderId })
+                    });
+
+                    if (!tgRes.ok) throw new Error(tFn('payment.saveError'));
+
+                    formSuccess.textContent = tFn('payment.activatedSuccess');
+                    formSuccess.style.display = 'block';
+                    activateBtn.style.display = 'none';
+
+                    // Update local user data
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    user.tradingViewUsername = tvUsername;
+                    localStorage.setItem('user', JSON.stringify(user));
+
+                } catch (err) {
+                    formError.textContent = err.message || tFn('payment.connectionError');
+                    formError.style.display = 'block';
+                    activateBtn.textContent = tFn('payment.activateBtn');
+                    activateBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

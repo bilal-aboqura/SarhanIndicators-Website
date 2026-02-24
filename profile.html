@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم الشخصية | Sarhan Indicators</title>
+  <link rel="icon" type="image/png" href="/assets/images/logo.png" />
+  <link rel="stylesheet" href="/src/index.css" />
+  <script type="module" src="/src/i18n.js"></script>
+  <style>
+    :root {
+      --profile-sidebar-width: 300px;
+      --card-blur: 20px;
+      --accent-glow: rgba(5, 150, 105, 0.4);
+      --primary-glow: rgba(0, 201, 167, 0.4);
+    }
+
+    body {
+      background-color: #010403;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Background Elements */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      animation: float 20s infinite alternate;
+    }
+
+    .blob-1 {
+      background: var(--clr-accent);
+      top: -200px;
+      left: -200px;
+    }
+
+    .blob-2 {
+      background: var(--clr-primary);
+      bottom: -200px;
+      right: -200px;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(100px, 50px) scale(1.1); }
+    }
+
+    .profile-page {
+      min-height: 100vh;
+      padding-top: calc(var(--navbar-height) + var(--sp-2xl));
+      padding-bottom: var(--sp-4xl);
+    }
+
+    .profile-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--sp-lg);
+      display: grid;
+      grid-template-columns: var(--profile-sidebar-width) 1fr;
+      gap: var(--sp-2xl);
+    }
+
+    /* Enhanced Sidebar */
+    .profile-sidebar {
+      position: sticky;
+      top: calc(var(--navbar-height) + var(--sp-xl));
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-xl);
+      animation: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .user-profile-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(var(--card-blur));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-xl);
+      padding: var(--sp-2xl);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .user-profile-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.05));
+      pointer-events: none;
+    }
+
+    .avatar-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto var(--sp-lg);
+    }
+
+    .avatar-glow {
+      position: absolute;
+      inset: -5px;
+      background: var(--grad-accent);
+      border-radius: 50%;
+      filter: blur(15px);
+      opacity: 0.4;
+      animation: pulse 3s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.1); opacity: 0.6; }
+    }
+
+    .avatar-img {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #1a1a24;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: white;
+      z-index: 1;
+    }
+
+    .user-meta h2 {
+      font-size: var(--fs-h3);
+      margin-bottom: var(--sp-xs);
+      letter-spacing: -0.02em;
+    }
+
+    .user-meta p {
+      font-size: var(--fs-xs);
+      color: var(--clr-text-secondary);
+      font-family: var(--ff-en);
+    }
+
+    .nav-glass-list {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(var(--card-blur));
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-xl);
+      padding: var(--sp-md);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-md);
+      padding: var(--sp-md) var(--sp-lg);
+      border-radius: var(--radius-lg);
+      color: var(--clr-text-secondary);
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      font-weight: 600;
+      margin-bottom: var(--sp-xs);
+    }
+
+    .nav-item:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateX(-5px);
+    }
+
+    .nav-item.active {
+      color: var(--clr-accent);
+      background: rgba(5, 150, 105, 0.1);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 20%;
+      bottom: 20%;
+      width: 4px;
+      background: var(--clr-accent);
+      border-radius: 4px;
+      box-shadow: 0 0 10px var(--clr-accent);
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke-width: 1.5;
+    }
+
+    /* Content Area */
+    .main-content-flow {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2xl);
+    }
+
+    .content-panel {
+      display: none;
+      animation: panelIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .content-panel.active {
+      display: block;
+    }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(40px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .premium-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(var(--card-blur));
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--radius-xl);
+      padding: var(--sp-3xl);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .panel-header {
+      margin-bottom: var(--sp-2xl);
+    }
+
+    .panel-header h1 {
+      font-size: var(--fs-h1);
+      background: linear-gradient(to left, #fff, rgba(255, 255, 255, 0.5));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: var(--sp-sm);
+    }
+
+    .panel-header p {
+      color: var(--clr-text-secondary);
+      font-size: var(--fs-body);
+    }
+
+    /* Form UI Enhancement */
+    .grid-fields {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--sp-xl);
+    }
+
+    .field-box {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-sm);
+      margin-bottom: var(--sp-xl);
+      transition: transform 0.3s ease;
+    }
+
+    .field-box:focus-within {
+      transform: translateY(-2px);
+    }
+
+    .field-box label {
+      font-size: var(--fs-xs);
+      font-weight: 700;
+      color: var(--clr-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding-right: var(--sp-xs);
+    }
+
+    .field-input-group {
+      position: relative;
+    }
+
+    .field-input-group input {
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-lg);
+      color: white;
+      font-size: var(--fs-body);
+      transition: all 0.3s ease;
+      font-family: var(--ff-en); /* Most inputs are LTR data */
+    }
+
+    .field-input-group input[id="name"] { font-family: var(--ff-ar); }
+
+    .field-input-group input:focus {
+      border-color: var(--clr-accent);
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.15);
+      outline: none;
+    }
+
+    .btn-gradient {
+      background: var(--grad-accent);
+      padding: 16px 32px;
+      border-radius: var(--radius-md);
+      color: white;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 20px rgba(5, 150, 105, 0.2);
+    }
+
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(5, 150, 105, 0.3);
+      filter: brightness(1.1);
+    }
+
+    /* Super Subscription Cards */
+    .subs-display-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: var(--sp-xl);
+    }
+
+    .premium-sub-card {
+      position: relative;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: var(--sp-2xl);
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .premium-sub-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-pattern {
+      position: absolute;
+      top: -50px;
+      left: -50px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .sub-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--sp-2xl);
+    }
+
+    .sub-badge-status {
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-active { background: rgba(0, 201, 167, 0.2); color: var(--clr-primary); box-shadow: 0 0 20px rgba(0, 201, 167, 0.2); }
+    .status-pending { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+    .status-expired { background: rgba(255, 68, 68, 0.2); color: var(--clr-highlight); }
+
+    .sub-name-wrap h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      font-family: var(--ff-en);
+      margin-bottom: 4px;
+    }
+
+    .sub-info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .sub-info-row span:first-child { color: var(--clr-text-muted); font-size: 0.85rem; }
+    .sub-info-row span:last-child { color: white; font-weight: 600; font-family: var(--ff-en); font-size: 0.9rem; }
+
+    .sub-cost {
+      margin-top: var(--sp-xl);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .cost-value { font-size: 2rem; font-weight: 900; color: white; font-family: var(--ff-en); }
+    .cost-currency { font-size: 0.9rem; color: var(--clr-text-secondary); font-weight: 600; }
+
+    /* Custom Scrollbar for Sections */
+    .profile-nav::-webkit-scrollbar { width: 4px; }
+    .profile-nav::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+
+    @media (max-width: 1100px) {
+      .profile-container { grid-template-columns: 1fr; gap: var(--sp-xl); }
+      .profile-sidebar { position: static; flex-direction: column; animation: none; }
+      .nav-glass-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .nav-item { margin-bottom: 0; justify-content: center; font-size: 0.8rem; padding: 12px; }
+      .nav-item span { display: none; } /* On mobile show only icons or abbreviations */
+      .nav-item::before { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .grid-fields { grid-template-columns: 1fr; }
+      .nav-glass-list { grid-template-columns: 1fr 1fr 1fr; }
+      .premium-card { padding: var(--sp-xl); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Ambient Visuals -->
+<div class="ambient-bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+</div>
+
+<div class="page-wrapper">
+  <!-- NAVBAR -->
+  <div id="navbar-placeholder"></div>
+  <script type="module" src="/src/components.js"></script>
+
+  <div class="profile-page">
+    <div class="profile-container">
+      
+      <!-- Sidebar Navigation -->
+      <aside class="profile-sidebar">
+        <div class="user-profile-card">
+          <div class="avatar-container">
+            <div class="avatar-glow"></div>
+            <div class="avatar-img" id="userInitial">U</div>
+          </div>
+          <div class="user-meta">
+            <h2 id="userNameDisplay">جاري التحميل...</h2>
+            <p id="userEmailDisplay">loading@sarhan.com</p>
+          </div>
+        </div>
+
+        <nav class="nav-glass-list">
+          <div class="nav-item active" data-target="personal-section">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span data-i18n="profile.personalData">البيانات الشخصية</span>
+          </div>
+          <div class="nav-item" data-target="subs-section">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <span data-i18n="profile.subscriptions">إدارة الاشتراكات</span>
+          </div>
+          <div class="nav-item" data-target="security-section">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span data-i18n="profile.security">الأمان وكلمة المرور</span>
+          </div>
+          <div class="nav-item logout-nav-item" id="navLogout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke: #ff4444;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            <span style="color: #ff4444;" data-i18n="profile.logout">تسجيل الخروج</span>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Content Area -->
+      <main class="main-content-flow">
+        <div id="toastMessage" class="profile-message"></div>
+
+        <!-- Personal Info Panel -->
+        <section id="personal-section" class="content-panel active">
+          <div class="panel-header">
+            <h1 data-i18n="profile.profileTitle">الملف الشخصي</h1>
+            <p data-i18n="profile.profileDesc">تحكم في بياناتك الأساسية وكيف تظهر في المنصة.</p>
+          </div>
+
+          <div class="premium-card">
+            <form id="personalForm">
+              <div class="grid-fields">
+                <div class="field-box">
+                  <label for="name" data-i18n="profile.nameLabel">الاسم الثلاثي</label>
+                  <div class="field-input-group">
+                    <input type="text" id="name" placeholder="أدخل اسمك الكامل" data-i18n-placeholder="profile.namePlaceholder" required />
+                  </div>
+                </div>
+                <div class="field-box">
+                  <label for="email" data-i18n="profile.emailLabel">البريد الإلكتروني</label>
+                  <div class="field-input-group">
+                    <input type="email" id="email" dir="ltr" readonly style="opacity: 0.6; cursor: not-allowed; background: rgba(255,255,255,0.01);" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-box">
+                <label for="tvUsername" data-i18n="profile.tvLabel">حساب TradingView</label>
+                <div class="field-input-group">
+                  <input type="text" id="tvUsername" placeholder="مثال: Sarhan_Trader" data-i18n-placeholder="profile.tvPlaceholder" dir="ltr" />
+                </div>
+              </div>
+
+              <div style="margin-top: var(--sp-md);">
+                <button type="submit" class="btn-gradient" id="btnUpdatePersonal">
+                  <span data-i18n="profile.updateData">تحديث البيانات</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17L4 12"/></svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- Subscriptions Panel -->
+        <section id="subs-section" class="content-panel">
+          <div class="panel-header">
+            <h1 data-i18n="profile.subsTitle">الاشتراكات والوصول</h1>
+            <p data-i18n="profile.subsDesc">قائمة المؤشرات المفعلة على حسابك وتاريخ انتهاء الصلاحية.</p>
+          </div>
+
+          <div id="subsContainer" class="subs-display-grid">
+            <!-- Loading State -->
+            <div class="premium-card" style="grid-column: 1/-1; text-align: center; padding: 60px;">
+              <div class="avatar-glow" style="position:relative; margin: 0 auto; width: 60px; height: 60px; opacity: 1;"></div>
+              <p style="margin-top: 20px; color: var(--clr-text-muted);" data-i18n="profile.syncingSubs">جاري مزامنة الاشتراكات...</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Security Panel -->
+        <section id="security-section" class="content-panel">
+          <div class="panel-header">
+            <h1 data-i18n="profile.securityTitle">إعدادات الأمان</h1>
+            <p data-i18n="profile.securityDesc">قم بتأمين حسابك عبر تغيير كلمة المرور بشكل دوري.</p>
+          </div>
+
+          <div class="premium-card">
+            <form id="securityForm">
+              <div class="field-box">
+                <label for="curPass" data-i18n="profile.currentPassword">كلمة المرور الحالية</label>
+                <div class="field-input-group">
+                  <input type="password" id="curPass" placeholder="••••••••" required />
+                </div>
+              </div>
+
+              <div class="grid-fields">
+                <div class="field-box">
+                  <label for="newPass" data-i18n="profile.newPassword">كلمة المرور الجديدة</label>
+                  <div class="field-input-group">
+                    <input type="password" id="newPass" placeholder="••••••••" minlength="6" required />
+                  </div>
+                </div>
+                <div class="field-box">
+                  <label for="confPass" data-i18n="profile.confirmNewPassword">تأكيد كلمة المرور الجديدة</label>
+                  <div class="field-input-group">
+                    <input type="password" id="confPass" placeholder="••••••••" required />
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: var(--sp-md);">
+                <button type="submit" class="btn-gradient" id="btnUpdatePass">
+                  <span data-i18n="profile.updatePassword">تحديث كلمة المرور</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+</div>
+
+<script>
+  // i18n helper
+  const tFn = () => window.i18n ? window.i18n.t : (k) => k;
+
+  // Validation & Auth
+  const token = localStorage.getItem('token');
+  if (!token) window.location.href = '/login?redirect=/profile';
+
+  const HEADERS = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+
+  const toast = document.getElementById('toastMessage');
+  function notify(msg, type = 'success') {
+    toast.textContent = msg;
+    toast.className = `profile-message ${type}`;
+    toast.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => { toast.style.display = 'none'; }, 6000);
+  }
+
+  // --- Dynamic Tab Logic ---
+  const navItems = document.querySelectorAll('.nav-item[data-target]');
+  const panels = document.querySelectorAll('.content-panel');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const targetId = item.getAttribute('data-target');
+      navItems.forEach(ni => ni.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      
+      item.classList.add('active');
+      document.getElementById(targetId).classList.add('active');
+    });
+  });
+
+  // --- Data Loading & Rendering ---
+  const plans = { 'x-trend-pro': 'X TREND PRO', 'smart-map': 'SMART MAP', 'both': 'ULTIMATE ACCESS' };
+
+  function getStatusText(status) {
+    const t = tFn();
+    const map = { active: t('profile.statusActive'), pending: t('profile.statusPending'), expired: t('profile.statusExpired'), cancelled: t('profile.statusCancelled') };
+    return map[status] || status;
+  }
+
+  async function syncProfile() {
+    const t = tFn();
+    try {
+      const res = await fetch('/api/auth/me', { headers: HEADERS });
+      if (res.ok) {
+        const data = await res.json();
+        const u = data.user;
+        document.getElementById('name').value = u.name || '';
+        document.getElementById('email').value = u.email || '';
+        document.getElementById('tvUsername').value = u.tradingViewUsername || '';
+        
+        document.getElementById('userNameDisplay').textContent = u.name || t('profile.newUser');
+        document.getElementById('userEmailDisplay').textContent = u.email;
+        document.getElementById('userInitial').textContent = (u.name || 'U').charAt(0).toUpperCase();
+      } else if (res.status === 401) {
+        localStorage.clear();
+        window.location.href = '/login';
+      }
+    } catch (e) { notify(t('profile.syncError'), 'error'); }
+  }
+
+  async function syncSubscriptions() {
+    const t = tFn();
+    try {
+      const res = await fetch('/api/auth/subscriptions', { headers: HEADERS });
+      if (!res.ok) throw new Error('Failed to fetch subscriptions');
+      const data = await res.json();
+      const grid = document.getElementById('subsContainer');
+
+      if (data.success && data.subscriptions.length > 0) {
+        const filtered = data.subscriptions.filter((s, index, self) => {
+          if (s.status === 'active') return true;
+          if (s.status === 'pending') {
+            const hasActive = self.some(sub => sub.planId === s.planId && sub.status === 'active');
+            if (hasActive) return false;
+            const firstPendingIdx = self.findIndex(sub => sub.planId === s.planId && sub.status === 'pending');
+            return index === firstPendingIdx;
+          }
+          return false;
+        });
+
+        if (filtered.length === 0) {
+           grid.innerHTML = `
+            <div class="premium-card" style="grid-column: 1/-1; text-align: center; padding: 60px;">
+              <h3 style="margin-bottom: 20px;">${t('profile.noSubs')}</h3>
+              <a href="/#pricing" class="btn-gradient" style="text-decoration:none;">${t('profile.explorePlans')}</a>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = filtered.map(s => {
+          const hasTelegram = !!s.telegramId;
+          const isActive = s.status === 'active';
+          
+          let telegramNotice = '';
+          if (isActive && !hasTelegram) {
+            telegramNotice = `
+              <div class="telegram-alert" style="margin-top:var(--sp-md); padding:var(--sp-sm) var(--sp-md); background:rgba(5, 150, 105, 0.1); border:1px solid var(--clr-accent); border-radius:var(--radius-md); text-align:center;">
+                <p style="font-size:var(--fs-xs); color:var(--clr-accent); margin-bottom:var(--sp-sm); font-weight:bold;">${t('profile.telegramNotLinked')}</p>
+                <div style="display:flex; gap:5px;">
+                  <input type="text" id="tele-input-${s.kashierOrderId}" placeholder="Telegram ID" style="flex:1; font-size:12px; padding:5px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:4px;">
+                  <button class="btn btn-sm btn-primary" style="padding:5px 10px; font-size:11px;" onclick="saveTelegram('${s.kashierOrderId}')">${t('profile.saveTelegram')}</button>
+                </div>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="premium-sub-card">
+              <div class="card-pattern"></div>
+              <div class="sub-card-header">
+                <div class="sub-name-wrap">
+                  <h3>${plans[s.planId] || s.planId.toUpperCase()}</h3>
+                  <span>${t('profile.instantActivation')} ${hasTelegram ? '✓' : ''}</span>
+                </div>
+                <div class="sub-badge-status status-${s.status}">${getStatusText(s.status)}</div>
+              </div>
+              
+              <div class="sub-info-grid">
+                <div class="sub-info-row">
+                  <span>${t('profile.subDate')}</span>
+                  <span>${s.startDate ? new Date(s.startDate).toLocaleDateString('en-GB') : '-'}</span>
+                </div>
+                <div class="sub-info-row">
+                  <span>${t('profile.endDate')}</span>
+                  <span>${s.endDate ? new Date(s.endDate).toLocaleDateString('en-GB') : '-'}</span>
+                </div>
+                <div class="sub-info-row">
+                  <span>${t('profile.cycleType')}</span>
+                  <span>${s.billingCycle === 'yearly' ? 'ANNUAL' : 'MONTHLY'}</span>
+                </div>
+                ${hasTelegram ? `
+                <div class="sub-info-row" style="border:none;">
+                  <span>${t('profile.telegram')}</span>
+                  <span>${s.telegramId}</span>
+                </div>` : ''}
+              </div>
+
+              ${telegramNotice}
+
+              <div class="sub-cost" style="margin-top:var(--sp-lg);">
+                <span class="cost-value">${s.amount}</span>
+                <span class="cost-currency">${s.currency}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        grid.innerHTML = `
+          <div class="premium-card" style="grid-column: 1/-1; text-align: center; padding: 60px;">
+            <h3 style="margin-bottom: 20px;">${t('profile.noSubs')}</h3>
+            <a href="/#pricing" class="btn-gradient" style="text-decoration:none;">${t('profile.explorePlans')}</a>
+          </div>
+        `;
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  // Save Telegram ID from profile
+  async function saveTelegram(orderId) {
+    const t = tFn();
+    const input = document.getElementById(`tele-input-${orderId}`);
+    const telegramId = input.value.trim();
+    if (!telegramId) return notify(t('profile.telegramRequired'), 'error');
+
+    try {
+      const res = await fetch('/api/payment/telegram-id', {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify({ orderId, telegramId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        notify(t('profile.telegramSuccess'));
+        syncSubscriptions();
+      } else {
+        notify(data.message, 'error');
+      }
+    } catch (e) { notify(t('profile.telegramError'), 'error'); }
+  }
+
+  // --- Handlers ---
+  document.getElementById('personalForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const t = tFn();
+    const btn = document.getElementById('btnUpdatePersonal');
+    btn.disabled = true;
+    btn.querySelector('span').textContent = t('profile.updating');
+
+    try {
+      const res = await fetch('/api/auth/profile', {
+        method: 'PUT',
+        headers: HEADERS,
+        body: JSON.stringify({
+          name: document.getElementById('name').value,
+          tradingViewUsername: document.getElementById('tvUsername').value
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        notify(t('profile.updateSuccess'));
+        syncProfile();
+      } else {
+        notify(data.message, 'error');
+      }
+    } catch (e) { notify(t('profile.connectionError'), 'error'); }
+    finally {
+      btn.disabled = false;
+      btn.querySelector('span').textContent = t('profile.updateData');
+    }
+  });
+
+  document.getElementById('securityForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const t = tFn();
+    const np = document.getElementById('newPass').value;
+    const cp = document.getElementById('confPass').value;
+
+    if (np !== cp) return notify(t('profile.passwordMismatch'), 'error');
+
+    const btn = document.getElementById('btnUpdatePass');
+    btn.disabled = true;
+    btn.querySelector('span').textContent = t('profile.updatingPassword');
+
+    try {
+      const res = await fetch('/api/auth/profile', {
+        method: 'PUT',
+        headers: HEADERS,
+        body: JSON.stringify({
+          name: document.getElementById('name').value,
+          currentPassword: document.getElementById('curPass').value,
+          newPassword: np
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        notify(t('profile.passwordSuccess'));
+        document.getElementById('securityForm').reset();
+      } else {
+        notify(data.message, 'error');
+      }
+    } catch (e) { notify(t('profile.connectionError'), 'error'); }
+    finally {
+      btn.disabled = false;
+      btn.querySelector('span').textContent = t('profile.updatePassword');
+    }
+  });
+
+  document.getElementById('navLogout').addEventListener('click', () => {
+    localStorage.clear();
+    window.location.href = '/';
+  });
+
+  // Re-apply translations when language changes
+  document.addEventListener('languageChanged', () => {
+    syncSubscriptions();
+  });
+
+  // Init
+  syncProfile();
+  syncSubscriptions();
+</script>
+</body>
+</html>

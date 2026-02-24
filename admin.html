@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم | Sarhan Indicators</title>
+  <link rel="icon" type="image/png" href="/assets/images/logo.png" />
+  <link rel="stylesheet" href="/src/index.css" />
+  <style>
+    /* ===== Admin Layout ===== */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .admin-sidebar {
+      width: 260px;
+      background: rgba(5, 10, 9, 0.95);
+      border-left: 1px solid var(--clr-border);
+      padding: var(--sp-xl) 0;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transition: transform var(--trans-base);
+    }
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-sm);
+      padding: 0 var(--sp-xl);
+      margin-bottom: var(--sp-2xl);
+    }
+    .sidebar-logo img { width: 36px; height: 36px; }
+    .sidebar-logo span {
+      font-family: var(--ff-en);
+      font-weight: var(--fw-bold);
+      font-size: 0.95rem;
+    }
+    .sidebar-label {
+      font-size: var(--fs-xs);
+      color: var(--clr-text-muted);
+      text-transform: uppercase;
+      padding: var(--sp-sm) var(--sp-xl);
+      margin-top: var(--sp-md);
+    }
+    .sidebar-nav { flex: 1; }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-md);
+      padding: var(--sp-md) var(--sp-xl);
+      font-size: var(--fs-small);
+      color: var(--clr-text-secondary);
+      cursor: pointer;
+      transition: all var(--trans-fast);
+      border-right: 3px solid transparent;
+    }
+    .sidebar-link:hover {
+      color: var(--clr-text);
+      background: var(--clr-surface);
+    }
+    .sidebar-link.active {
+      color: var(--clr-accent);
+      background: rgba(5, 150, 105, 0.08);
+      border-right-color: var(--clr-accent);
+    }
+    .sidebar-link svg {
+      width: 18px; height: 18px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .sidebar-footer {
+      padding: var(--sp-md) var(--sp-xl);
+      border-top: 1px solid var(--clr-border);
+    }
+    .sidebar-footer a {
+      font-size: var(--fs-small);
+      color: var(--clr-text-muted);
+    }
+    .sidebar-footer a:hover { color: var(--clr-text); }
+
+    /* Main Content */
+    .admin-main {
+      flex: 1;
+      margin-right: 260px;
+      padding: var(--sp-2xl);
+      min-height: 100vh;
+    }
+    .admin-page-title {
+      font-size: var(--fs-h2);
+      font-weight: var(--fw-bold);
+      margin-bottom: var(--sp-2xl);
+    }
+
+    /* Tab Content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Stat Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--sp-lg);
+      margin-bottom: var(--sp-2xl);
+    }
+    .stat-card {
+      padding: var(--sp-xl);
+    }
+    .stat-card .stat-label {
+      font-size: var(--fs-small);
+      color: var(--clr-text-secondary);
+      margin-bottom: var(--sp-sm);
+    }
+    .stat-card .stat-value {
+      font-size: var(--fs-h2);
+      font-weight: var(--fw-black);
+      font-family: var(--ff-en);
+    }
+    .stat-card .stat-value.primary { color: var(--clr-primary); }
+    .stat-card .stat-value.accent { color: var(--clr-accent); }
+    .stat-card .stat-value.highlight { color: var(--clr-highlight); }
+
+    /* Table Toolbar */
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-md);
+      margin-bottom: var(--sp-lg);
+      flex-wrap: wrap;
+    }
+    .table-toolbar input,
+    .table-toolbar select {
+      padding: var(--sp-sm) var(--sp-lg);
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      color: var(--clr-text);
+      font-size: var(--fs-small);
+    }
+    .table-toolbar input { min-width: 250px; }
+    .table-toolbar input:focus,
+    .table-toolbar select:focus {
+      border-color: var(--clr-accent);
+      outline: none;
+    }
+    .table-toolbar select option { background: var(--clr-bg); }
+
+    /* Data Table */
+    .data-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--clr-border);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .data-table th,
+    .data-table td {
+      padding: var(--sp-md) var(--sp-lg);
+      text-align: right;
+      font-size: var(--fs-small);
+      white-space: nowrap;
+    }
+    .data-table th {
+      background: rgba(255,255,255,0.03);
+      color: var(--clr-text-muted);
+      font-weight: var(--fw-medium);
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .data-table td {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--clr-text-secondary);
+    }
+    .data-table tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+    .data-table .en { font-family: var(--ff-en); direction: ltr; display: inline-block; }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 12px;
+      border-radius: var(--radius-pill);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-semibold);
+    }
+    .badge-active { background: rgba(0,201,167,0.15); color: #00c9a7; }
+    .badge-pending { background: rgba(255,193,7,0.15); color: #ffc107; }
+    .badge-expired, .badge-cancelled { background: rgba(255,68,68,0.15); color: #ff4444; }
+    .badge-admin { background: rgba(5,150,105,0.15); color: var(--clr-accent); }
+    .badge-user { background: rgba(255,255,255,0.08); color: var(--clr-text-muted); }
+
+    /* Action Buttons */
+    .action-btn {
+      padding: 4px 12px;
+      border-radius: var(--radius-sm);
+      font-size: var(--fs-xs);
+      cursor: pointer;
+      transition: all var(--trans-fast);
+      border: 1px solid var(--clr-border);
+      background: var(--clr-surface);
+      color: var(--clr-text-secondary);
+    }
+    .action-btn:hover {
+      border-color: var(--clr-border-hover);
+      color: var(--clr-text);
+    }
+    .action-btn.danger { border-color: rgba(255,68,68,0.3); color: #ff4444; }
+    .action-btn.danger:hover { background: rgba(255,68,68,0.1); }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-sm);
+      margin-top: var(--sp-xl);
+    }
+    .pagination button {
+      padding: var(--sp-sm) var(--sp-md);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--clr-border);
+      background: var(--clr-surface);
+      color: var(--clr-text-secondary);
+      font-size: var(--fs-small);
+      cursor: pointer;
+    }
+    .pagination button:hover { border-color: var(--clr-border-hover); color: var(--clr-text); }
+    .pagination button.active { background: var(--clr-accent); color: #fff; border-color: var(--clr-accent); }
+    .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
+    .pagination .page-info { font-size: var(--fs-small); color: var(--clr-text-muted); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.visible { display: flex; }
+    .modal {
+      background: #050a09;
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-2xl);
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal h2 {
+      font-size: var(--fs-h3);
+      font-weight: var(--fw-bold);
+      margin-bottom: var(--sp-xl);
+    }
+    .modal .form-group { margin-bottom: var(--sp-lg); }
+    .modal label {
+      display: block;
+      font-size: var(--fs-small);
+      color: var(--clr-text-secondary);
+      margin-bottom: var(--sp-sm);
+    }
+    .modal input, .modal select {
+      width: 100%;
+      padding: var(--sp-md) var(--sp-lg);
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      color: var(--clr-text);
+      font-size: var(--fs-body);
+    }
+    .modal input:focus, .modal select:focus {
+      border-color: var(--clr-accent);
+      outline: none;
+    }
+    .modal select option { background: #0d0d14; }
+    .modal-actions {
+      display: flex;
+      gap: var(--sp-md);
+      margin-top: var(--sp-xl);
+    }
+
+    /* Mobile toggle */
+    .admin-mobile-toggle {
+      display: none;
+      position: fixed;
+      top: var(--sp-md);
+      right: var(--sp-md);
+      z-index: 200;
+      padding: var(--sp-sm) var(--sp-md);
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      color: var(--clr-text);
+    }
+
+    @media (max-width: 768px) {
+      .admin-sidebar {
+        transform: translateX(100%);
+      }
+      .admin-sidebar.open { transform: translateX(0); }
+      .admin-main { margin-right: 0; padding: var(--sp-lg); }
+      .admin-mobile-toggle { display: block; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Pricing specific */
+    .pricing-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--sp-md);
+    }
+    .price-calc-info {
+      font-size: var(--fs-xs);
+      color: var(--clr-text-muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="admin-layout">
+  <!-- Mobile Toggle -->
+  <button class="admin-mobile-toggle" id="sidebarToggle">☰ القائمة</button>
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <a href="/" class="sidebar-logo">
+      <img src="/assets/images/logo.png" alt="Sarhan" />
+      <span class="en-text">sarhan indicators</span>
+    </a>
+
+    <div class="sidebar-label">لوحة التحكم</div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-link active" data-tab="dashboard">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        الرئيسية
+      </div>
+      <div class="sidebar-link" data-tab="users">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        المستخدمين
+      </div>
+      <div class="sidebar-link" data-tab="subscriptions">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        الاشتراكات
+      </div>
+      <div class="sidebar-link" data-tab="pricing">
+        <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        الأسعار
+      </div>
+      <div class="sidebar-link" data-tab="testimonials">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        الآراء والمراجعات
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="/profile">← حسابي</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+
+    <!-- ===== Dashboard Tab ===== -->
+    <div class="tab-content active" id="tab-dashboard">
+      <h1 class="admin-page-title">لوحة التحكم</h1>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card glass-card">
+          <div class="stat-label">إجمالي المستخدمين</div>
+          <div class="stat-value primary" id="statUsers">—</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-label">الاشتراكات النشطة</div>
+          <div class="stat-value accent" id="statActiveSubs">—</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-label">إجمالي الإيرادات</div>
+          <div class="stat-value" id="statRevenue">—</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-label">مستخدمين جدد (هذا الشهر)</div>
+          <div class="stat-value primary" id="statNewUsers">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Users Tab ===== -->
+    <div class="tab-content" id="tab-users">
+      <h1 class="admin-page-title">المستخدمين</h1>
+      <div class="table-toolbar">
+        <input type="text" id="userSearch" placeholder="بحث بالاسم أو الايميل..." />
+      </div>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>البريد</th>
+              <th>الدور</th>
+              <th><span class="en">TradingView</span></th>
+              <th>تاريخ التسجيل</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr><td colspan="6" style="text-align:center; padding:var(--sp-2xl);">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" id="usersPagination"></div>
+    </div>
+
+    <!-- ===== Subscriptions Tab ===== -->
+    <div class="tab-content" id="tab-subscriptions">
+      <h1 class="admin-page-title">الاشتراكات</h1>
+      <div class="table-toolbar">
+        <select id="subsStatusFilter">
+          <option value="">كل الحالات</option>
+          <option value="active">نشط</option>
+          <option value="pending">قيد الانتظار</option>
+          <option value="expired">منتهي</option>
+          <option value="cancelled">ملغي</option>
+        </select>
+      </div>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>المستخدم</th>
+              <th>التليجرام</th>
+              <th>الباقة</th>
+              <th>الحالة</th>
+              <th>الدورة</th>
+              <th>المبلغ</th>
+              <th>من / إلى</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="subsTableBody">
+            <tr><td colspan="8" style="text-align:center; padding:var(--sp-2xl);">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    <div class="pagination" id="subsPagination"></div>
+    </div>
+
+    <!-- ===== Pricing Tab ===== -->
+    <div class="tab-content" id="tab-pricing">
+      <h1 class="admin-page-title">إدارة الأسعار</h1>
+      <div class="table-toolbar" style="display:flex; justify-content:space-between; align-items:center; gap: var(--sp-lg);">
+         <div style="display:flex; align-items:center; gap:var(--sp-md); background:var(--clr-surface); padding:var(--sp-sm) var(--sp-md); border-radius:var(--radius-md); border:1px solid var(--clr-border);">
+            <label style="margin:0; font-size:var(--fs-small);">سعر الدولار مقابل الجنيه:</label>
+            <input type="number" id="usdRateInput" style="width:80px; text-align:center; padding:5px; border-radius:5px;" value="50" />
+            <button class="btn btn-sm btn-outline" onclick="updateRate()">تحديث الصرف</button>
+         </div>
+         <button class="btn btn-primary" onclick="seedPricing()">إعادة تعيين الافتراضات</button>
+      </div>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>الباقة</th>
+              <th>الدورة</th>
+              <th>السعر (USD)</th>
+              <th>المقابل (EGP)</th>
+              <th>الخصم</th>
+              <th>الحالة</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="pricingTableBody">
+            <tr><td colspan="8" style="text-align:center; padding:var(--sp-2xl);">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== Testimonials Tab ===== -->
+    <div class="tab-content" id="tab-testimonials">
+      <h1 class="admin-page-title">إدارة الآراء والمراجعات</h1>
+      <div class="table-toolbar">
+        <select id="testimonialStatusFilter" onchange="loadTestimonials()">
+          <option value="">كل الحالات</option>
+          <option value="pending">قيد الانتظار</option>
+          <option value="approved">تمت الموافقة</option>
+          <option value="rejected">مرفوض</option>
+        </select>
+      </div>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>العميل</th>
+              <th>التقييم</th>
+              <th>التعليق</th>
+              <th>الحالة</th>
+              <th>التاريخ</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="testimonialTableBody">
+            <tr><td colspan="6" style="text-align:center; padding:var(--sp-2xl);">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" id="testimonialPagination"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal-overlay" id="editUserModal">
+  <div class="modal">
+    <h2>تعديل المستخدم</h2>
+    <form id="editUserForm">
+      <input type="hidden" id="editUserId" />
+      <div class="form-group">
+        <label>الاسم</label>
+        <input type="text" id="editUserName" />
+      </div>
+      <div class="form-group">
+        <label>البريد</label>
+        <input type="email" id="editUserEmail" dir="ltr" />
+      </div>
+      <div class="form-group">
+        <label>الدور</label>
+        <select id="editUserRole">
+          <option value="user">مستخدم</option>
+          <option value="admin">مدير</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>اسم <span class="en-text">TradingView</span></label>
+        <input type="text" id="editUserTV" dir="ltr" />
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">حفظ</button>
+        <button type="button" class="btn btn-outline" onclick="closeModal('editUserModal')">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Subscription Modal -->
+<div class="modal-overlay" id="editSubModal">
+  <div class="modal">
+    <h2>تعديل الاشتراك</h2>
+    <form id="editSubForm">
+      <input type="hidden" id="editSubId" />
+      <div class="form-group">
+        <label>الحالة</label>
+        <select id="editSubStatus">
+          <option value="active">نشط</option>
+          <option value="pending">قيد الانتظار</option>
+          <option value="expired">منتهي</option>
+          <option value="cancelled">ملغي</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>تاريخ البدء</label>
+        <input type="date" id="editSubStart" dir="ltr" />
+      </div>
+      <div class="form-group">
+        <label>تاريخ الانتهاء</label>
+        <input type="date" id="editSubEnd" dir="ltr" />
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">حفظ</button>
+        <button type="button" class="btn btn-outline" onclick="closeModal('editSubModal')">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Pricing Modal -->
+<div class="modal-overlay" id="editPricingModal">
+  <div class="modal" style="max-width: 600px;">
+    <h2>إدارة السعر والخصم</h2>
+    <form id="editPricingForm">
+      <input type="hidden" id="editPricingId" />
+      
+      <div style="background: rgba(255,255,255,0.03); padding: var(--sp-md); border-radius: var(--radius-md); margin-bottom: var(--sp-xl); border: 1px solid var(--clr-border);">
+        <label style="margin-bottom:0; color: var(--clr-accent);">الإعداد الحالي</label>
+        <div id="editPricingLabel" style="font-weight: bold; font-size: 1.1rem; margin-top: 5px;">—</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-lg);">
+        <div class="form-group">
+          <label>السعر الأصلي (قبل الخصم)</label>
+          <input type="number" id="editPricingOriginal" min="0" placeholder="مثلاً: 100" />
+          <div class="price-calc-info">السعر المرجعي الذي يظهر مشطوباً</div>
+        </div>
+        
+        <div class="form-group">
+          <label>نسبة الخصم (%)</label>
+          <input type="number" id="editPricingDiscount" min="0" max="100" placeholder="مثلاً: 25" />
+          <div class="price-calc-info">سيتم حساب السعر النهائي تلقائياً</div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: var(--sp-md);">
+        <label>السعر النهائي (المبلغ المطلوب دفعه)</label>
+        <input type="number" id="editPricingAmount" min="0" style="border-color: var(--clr-primary); font-weight: bold; font-size: 1.2rem;" />
+        <div class="price-calc-info">يمكنك تعديل هذا وسيتم تحديث النسبة تلقائياً</div>
+      </div>
+
+      <div class="form-group">
+        <label>حالة السعر</label>
+        <select id="editPricingActive">
+            <option value="true">نشط (يظهر للمستخدمين)</option>
+            <option value="false">غير نشط (مخفي)</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary" style="flex: 2;">حفظ التغييرات</button>
+        <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('editPricingModal')">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // ===== Auth Guard =====
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  if (!token) {
+    window.location.href = '/login';
+  }
+
+  // Check admin role via API
+  (async () => {
+    try {
+      const res = await fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!data.success || data.user.role !== 'admin') {
+        alert('غير مصرح لك بالوصول');
+        window.location.href = '/';
+        return;
+      }
+      // Verified admin, load data
+      loadDashboard();
+    } catch (e) {
+      window.location.href = '/login';
+    }
+  })();
+
+  const API = {
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  };
+
+  const planNames = {
+    'x-trend-pro': 'X TREND PRO',
+    'smart-map': 'SMART MAP',
+    'both': 'BOTH',
+  };
+
+  // ===== Tab Switching =====
+  const tabLinks = document.querySelectorAll('.sidebar-link[data-tab]');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      tabLinks.forEach(l => l.classList.remove('active'));
+      tabContents.forEach(t => t.classList.remove('active'));
+      link.classList.add('active');
+      const tab = link.getAttribute('data-tab');
+      document.getElementById(`tab-${tab}`).classList.add('active');
+
+      // Load data on tab switch
+      if (tab === 'dashboard') loadDashboard();
+      if (tab === 'users') loadUsers();
+      if (tab === 'subscriptions') loadSubscriptions();
+      if (tab === 'pricing') loadPricing();
+      if (tab === 'testimonials') loadTestimonials();
+
+      // Close mobile sidebar
+      document.getElementById('adminSidebar').classList.remove('open');
+    });
+  });
+
+  // Mobile sidebar toggle
+  document.getElementById('sidebarToggle').addEventListener('click', () => {
+    document.getElementById('adminSidebar').classList.toggle('open');
+  });
+
+  // ===== Dashboard =====
+  async function loadDashboard() {
+    try {
+      const res = await fetch('/api/admin/stats', { headers: API.headers });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('statUsers').textContent = data.stats.totalUsers;
+        document.getElementById('statActiveSubs').textContent = data.stats.activeSubscriptions;
+        document.getElementById('statRevenue').textContent = `$${data.stats.totalRevenue.toLocaleString()}`;
+        document.getElementById('statNewUsers').textContent = data.stats.newUsersThisMonth;
+      }
+    } catch (e) { console.error('Dashboard error:', e); }
+  }
+
+  // ===== Users =====
+  let usersPage = 1;
+
+  async function loadUsers(page = 1) {
+    usersPage = page;
+    const search = document.getElementById('userSearch').value;
+    try {
+      const res = await fetch(`/api/admin/users?page=${page}&limit=15&search=${encodeURIComponent(search)}`, { headers: API.headers });
+      const data = await res.json();
+      if (data.success) {
+        renderUsersTable(data.users);
+        renderPagination('usersPagination', data.pagination, loadUsers);
+      }
+    } catch (e) { console.error('Users error:', e); }
+  }
+
+  function renderUsersTable(users) {
+    const tbody = document.getElementById('usersTableBody');
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:var(--sp-2xl);color:var(--clr-text-muted);">لا يوجد مستخدمين</td></tr>';
+      return;
+    }
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>${u.name}</td>
+        <td><span class="en">${u.email}</span></td>
+        <td><span class="badge badge-${u.role}">${u.role === 'admin' ? 'مدير' : 'مستخدم'}</span></td>
+        <td><span class="en">${u.tradingViewUsername || '—'}</span></td>
+        <td>${new Date(u.createdAt).toLocaleDateString('ar-EG')}</td>
+        <td>
+          <button class="action-btn" onclick="openEditUser('${u._id}', '${u.name}', '${u.email}', '${u.role}', '${u.tradingViewUsername || ''}')">تعديل</button>
+          <button class="action-btn danger" onclick="deleteUser('${u._id}', '${u.name}')">حذف</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // Search debounce
+  let searchTimer;
+  document.getElementById('userSearch').addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => loadUsers(1), 400);
+  });
+
+  // ===== Subscriptions =====
+  let subsPage = 1;
+
+  async function loadSubscriptions(page = 1) {
+    subsPage = page;
+    const status = document.getElementById('subsStatusFilter').value;
+    try {
+      const res = await fetch(`/api/admin/subscriptions?page=${page}&limit=15&status=${status}`, { headers: API.headers });
+      const data = await res.json();
+      if (data.success) {
+        renderSubsTable(data.subscriptions);
+        renderPagination('subsPagination', data.pagination, loadSubscriptions);
+      }
+    } catch (e) { console.error('Subscriptions error:', e); }
+  }
+
+  function renderSubsTable(subs) {
+    const tbody = document.getElementById('subsTableBody');
+    if (subs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:var(--sp-2xl);color:var(--clr-text-muted);">لا يوجد اشتراكات</td></tr>';
+      return;
+    }
+    tbody.innerHTML = subs.map(s => {
+      const userName = s.userId ? (s.userId.name || s.userId.email) : '—';
+      const statusClass = s.status;
+      const statusLabel = { active: 'نشط', pending: 'قيد الانتظار', expired: 'منتهي', cancelled: 'ملغي' }[s.status] || s.status;
+      const startDate = s.startDate ? new Date(s.startDate).toLocaleDateString('ar-EG') : '—';
+      const endDate = s.endDate ? new Date(s.endDate).toLocaleDateString('ar-EG') : '—';
+      const startISO = s.startDate ? s.startDate.split('T')[0] : '';
+      const endISO = s.endDate ? s.endDate.split('T')[0] : '';
+      return `
+        <tr>
+          <td>${userName}</td>
+          <td dir="ltr" style="font-family:monospace; color:var(--clr-accent);">${s.telegramId || '—'}</td>
+          <td><span class="en">${planNames[s.planId] || s.planId}</span></td>
+          <td><span class="badge badge-${statusClass}">${statusLabel}</span></td>
+          <td>${s.billingCycle === 'yearly' ? 'سنوي' : 'شهري'}</td>
+          <td><span class="en">${s.amount} ${s.currency}</span></td>
+          <td>
+            <div style="font-size:var(--fs-xs);">من: ${startDate}</div>
+            <div style="font-size:var(--fs-xs);">إلى: ${endDate}</div>
+          </td>
+          <td><button class="action-btn" onclick="openEditSub('${s._id}', '${s.status}', '${startISO}', '${endISO}')">تعديل</button></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('subsStatusFilter').addEventListener('change', () => loadSubscriptions(1));
+
+  // ===== Pagination =====
+  function renderPagination(containerId, pag, loadFn) {
+    const container = document.getElementById(containerId);
+    if (pag.pages <= 1) { container.innerHTML = ''; return; }
+
+    let html = `<button ${pag.page <= 1 ? 'disabled' : ''} onclick="(${loadFn.name})(${pag.page - 1})">السابق</button>`;
+    for (let i = 1; i <= pag.pages; i++) {
+      if (pag.pages > 7 && Math.abs(i - pag.page) > 2 && i !== 1 && i !== pag.pages) {
+        if (i === pag.page - 3 || i === pag.page + 3) html += '<span class="page-info">...</span>';
+        continue;
+      }
+      html += `<button class="${i === pag.page ? 'active' : ''}" onclick="(${loadFn.name})(${i})">${i}</button>`;
+    }
+    html += `<button ${pag.page >= pag.pages ? 'disabled' : ''} onclick="(${loadFn.name})(${pag.page + 1})">التالي</button>`;
+    container.innerHTML = html;
+  }
+
+  // ===== Modals =====
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('visible');
+  }
+
+  function openEditUser(id, name, email, role, tv) {
+    document.getElementById('editUserId').value = id;
+    document.getElementById('editUserName').value = name;
+    document.getElementById('editUserEmail').value = email;
+    document.getElementById('editUserRole').value = role;
+    document.getElementById('editUserTV').value = tv;
+    document.getElementById('editUserModal').classList.add('visible');
+  }
+
+  document.getElementById('editUserForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editUserId').value;
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, {
+        method: 'PUT',
+        headers: API.headers,
+        body: JSON.stringify({
+          name: document.getElementById('editUserName').value,
+          email: document.getElementById('editUserEmail').value,
+          role: document.getElementById('editUserRole').value,
+          tradingViewUsername: document.getElementById('editUserTV').value,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        closeModal('editUserModal');
+        loadUsers(usersPage);
+      } else {
+        alert(data.message);
+      }
+    } catch (e) { alert('حدث خطأ'); }
+  });
+
+  async function deleteUser(id, name) {
+    if (!confirm(`هل أنت متأكد من حذف المستخدم "${name}"؟`)) return;
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, {
+        method: 'DELETE',
+        headers: API.headers,
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadUsers(usersPage);
+        loadDashboard();
+      } else {
+        alert(data.message);
+      }
+    } catch (e) { alert('حدث خطأ'); }
+  }
+
+  function openEditSub(id, status, start, end) {
+    document.getElementById('editSubId').value = id;
+    document.getElementById('editSubStatus').value = status;
+    document.getElementById('editSubStart').value = start;
+    document.getElementById('editSubEnd').value = end;
+    document.getElementById('editSubModal').classList.add('visible');
+  }
+
+  document.getElementById('editSubForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editSubId').value;
+    try {
+      const res = await fetch(`/api/admin/subscriptions/${id}`, {
+        method: 'PUT',
+        headers: API.headers,
+        body: JSON.stringify({
+          status: document.getElementById('editSubStatus').value,
+          startDate: document.getElementById('editSubStart').value || undefined,
+          endDate: document.getElementById('editSubEnd').value || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        closeModal('editSubModal');
+        loadSubscriptions(subsPage);
+      } else {
+        alert(data.message);
+      }
+    } catch (e) { alert('حدث خطأ'); }
+  });
+
+  // ===== Pricing =====
+  async function loadPricing() {
+    try {
+      const res = await fetch('/api/pricing'); 
+      const data = await res.json();
+      document.getElementById('usdRateInput').value = data.exchangeRate || 50;
+      renderPricingTable(data.pricing, data.exchangeRate);
+    } catch (e) { console.error('Pricing error:', e); }
+  }
+
+  async function updateRate() {
+    const rate = document.getElementById('usdRateInput').value;
+    try {
+      const res = await fetch('/api/pricing/rate', {
+        method: 'POST',
+        headers: API.headers,
+        body: JSON.stringify({ rate: Number(rate) })
+      });
+      if(res.ok) {
+        alert('تم تحديث سعر الصرف بنجاح');
+        loadPricing();
+      }
+    } catch(e) { alert('حدث خطأ'); }
+  }
+
+  function renderPricingTable(items, rate) {
+    const tbody = document.getElementById('pricingTableBody');
+    if (!items || items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:var(--sp-2xl);color:var(--clr-text-muted);">لا يوجد بيانات.</td></tr>';
+        return;
+    }
+    
+    // Show only USD rows as master rows
+    const usdPrices = items.filter(p => p.currency === 'USD');
+    usdPrices.sort((a, b) => a.planId.localeCompare(b.planId) || a.billingCycle.localeCompare(b.billingCycle));
+
+    tbody.innerHTML = usdPrices.map(p => {
+      const planName = planNames[p.planId] || p.planId;
+      const cycleName = p.billingCycle === 'yearly' ? 'سنوي' : 'شهري';
+      const egpAmount = Math.round(p.amount * rate);
+      return `
+        <tr>
+          <td><div style="display:flex; align-items:center; gap:8px;"><div style="width:8px; height:8px; border-radius:50%; background:${p.planId === 'both' ? 'var(--clr-accent)' : 'var(--clr-primary)'}"></div><b>${planName}</b></div></td>
+          <td><span class="badge ${p.billingCycle === 'yearly' ? 'badge-admin' : 'badge-user'}">${cycleName}</span></td>
+          <td><span class="en" style="color:var(--clr-primary); font-weight:bold; font-size:1.1rem;">$${p.amount}</span></td>
+          <td><span class="en" style="color:var(--clr-text-muted); font-size:0.9rem;">${egpAmount} EGP</span></td>
+          <td><span class="en" style="color:var(--clr-highlight); font-weight:bold;">${p.discountPercentage}%</span></td>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="togglePricingStatus('${p._id}', ${p.isActive})">
+               <span class="badge ${p.isActive ? 'badge-active' : 'badge-expired'}">${p.isActive ? 'نشط' : 'معطل'}</span>
+            </div>
+          </td>
+          <td>
+              <button class="action-btn" style="background:rgba(91, 141, 239, 0.1); border-color:var(--clr-accent); color:var(--clr-accent);" onclick="openEditPricing('${p._id}', '${p.planId}', '${p.billingCycle}', '${p.currency}', ${p.amount}, ${p.originalAmount || 0}, ${p.discountPercentage}, ${p.isActive})">تعديل السعر</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function togglePricingStatus(id, currentStatus) {
+    try {
+        const res = await fetch(`/api/pricing/${id}`, {
+            method: 'PUT',
+            headers: API.headers,
+            body: JSON.stringify({ isActive: !currentStatus })
+        });
+        if(res.ok) loadPricing();
+    } catch(e) { console.error(e); }
+  }
+
+  window.seedPricing = async function() {
+    if(!confirm('هل أنت متأكد؟ سيتم إعادة تعيين جميع الأسعار إلى القيم الافتراضية الأساسية.')) return;
+    try {
+        const res = await fetch('/api/pricing/seed?force=true', { 
+            method: 'POST', 
+            headers: API.headers 
+        });
+        const data = await res.json();
+        alert(data.msg);
+        loadPricing();
+    } catch(e) { alert('Error seeding'); }
+  };
+
+  window.openEditPricing = function(id, plan, cycle, cur, amount, orig, disc, active) {
+    document.getElementById('editPricingId').value = id;
+    document.getElementById('editPricingLabel').textContent = `${planNames[plan] || plan} (${cycle === 'yearly' ? 'سنوي' : 'شهري'}) - ${cur}`;
+    document.getElementById('editPricingAmount').value = amount;
+    document.getElementById('editPricingOriginal').value = orig;
+    document.getElementById('editPricingDiscount').value = disc;
+    document.getElementById('editPricingActive').value = active.toString();
+    document.getElementById('editPricingModal').classList.add('visible');
+  };
+
+  // --- Auto Calculator Logic ---
+  const inpAmount = document.getElementById('editPricingAmount');
+  const inpOriginal = document.getElementById('editPricingOriginal');
+  const inpDiscount = document.getElementById('editPricingDiscount');
+
+  inpOriginal.addEventListener('input', () => {
+    const orig = parseFloat(inpOriginal.value) || 0;
+    const disc = parseFloat(inpDiscount.value) || 0;
+    if (orig > 0) {
+      inpAmount.value = Math.round(orig * (1 - disc / 100));
+    }
+  });
+
+  inpDiscount.addEventListener('input', () => {
+    const orig = parseFloat(inpOriginal.value) || 0;
+    const disc = parseFloat(inpDiscount.value) || 0;
+    if (orig > 0) {
+      inpAmount.value = Math.round(orig * (1 - disc / 100));
+    }
+  });
+
+  inpAmount.addEventListener('input', () => {
+    const amount = parseFloat(inpAmount.value) || 0;
+    const orig = parseFloat(inpOriginal.value) || 0;
+    if (orig > 0) {
+      inpDiscount.value = Math.round(((orig - amount) / orig) * 100);
+    }
+  });
+
+  document.getElementById('editPricingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editPricingId').value;
+    try {
+        const res = await fetch(`/api/pricing/${id}`, {
+            method: 'PUT',
+            headers: API.headers,
+            body: JSON.stringify({
+                amount: Number(document.getElementById('editPricingAmount').value),
+                originalAmount: Number(document.getElementById('editPricingOriginal').value),
+                discountPercentage: Number(document.getElementById('editPricingDiscount').value),
+                isActive: document.getElementById('editPricingActive').value === 'true'
+            })
+        });
+        
+        if(res.ok) {
+            closeModal('editPricingModal');
+            loadPricing();
+        } else {
+            alert('فشل التحديث');
+        }
+    } catch(e) { alert('حدث خطأ'); }
+  });
+
+  // === Testimonials Management ===
+  async function loadTestimonials(page = 1) {
+    const status = document.getElementById('testimonialStatusFilter').value;
+    try {
+      const res = await fetch(`/api/admin/testimonials?page=${page}&limit=10&status=${status}`, { headers: API.headers });
+      const data = await res.json();
+      if (data.success) {
+        renderTestimonialsTable(data.testimonials);
+        renderPagination('testimonialPagination', data.pagination, loadTestimonials);
+      }
+    } catch (e) { console.error('Testimonials error:', e); }
+  }
+
+  function renderTestimonialsTable(items) {
+    const tbody = document.getElementById('testimonialTableBody');
+    if (items.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:var(--sp-2xl);color:var(--clr-text-muted);">لا يوجد آراء</td></tr>';
+      return;
+    }
+    tbody.innerHTML = items.map(t => {
+      const date = new Date(t.createdAt).toLocaleDateString('ar-EG');
+      const stars = '★'.repeat(t.rating) + '☆'.repeat(5 - t.rating);
+      const statusLabel = { pending: 'قيد الانتظار', approved: 'مقبول', rejected: 'مرفوض' }[t.status];
+      const statusClass = t.status === 'approved' ? 'badge-active' : (t.status === 'pending' ? 'badge-user' : 'badge-expired');
+      
+      return `
+        <tr>
+          <td><b>${t.name}</b></td>
+          <td style="color:#ffcc00; font-size:1.1rem;">${stars}</td>
+          <td style="max-width:300px; font-size:0.9rem; line-height:1.4;">${t.comment}</td>
+          <td><span class="badge ${statusClass}">${statusLabel}</span></td>
+          <td>${date}</td>
+          <td>
+            <div style="display:flex; gap:5px;">
+              ${t.status !== 'approved' ? `<button class="action-btn" style="background:rgba(0,201,100,0.1); border-color:#00c9a7; color:#00c9a7;" onclick="updateTestimonialStatus('${t._id}', 'approved')">موافقة</button>` : ''}
+              ${t.status !== 'rejected' ? `<button class="action-btn" style="background:rgba(255,100,100,0.1); border-color:#ff6464; color:#ff6464;" onclick="updateTestimonialStatus('${t._id}', 'rejected')">رفض</button>` : ''}
+              <button class="action-btn danger" onclick="deleteTestimonial('${t._id}')">حذف</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  window.updateTestimonialStatus = async function(id, status) {
+    try {
+      const res = await fetch(`/api/admin/testimonials/${id}`, {
+        method: 'PATCH',
+        headers: API.headers,
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) loadTestimonials();
+    } catch (e) { console.error(e); }
+  };
+
+  window.deleteTestimonial = async function(id) {
+    if (!confirm('هل أنت متأكد من حذف هذا الرأي نهائياً؟')) return;
+    try {
+      const res = await fetch(`/api/admin/testimonials/${id}`, {
+        method: 'DELETE',
+        headers: API.headers
+      });
+      if (res.ok) loadTestimonials();
+    } catch (e) { console.error(e); }
+  };
+
+  // Close modals on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('visible');
+    });
+  });
+</script>
+  <!-- FOOTER -->
+  <div id="footer-placeholder"></div>
+
+  <script type="module" src="/src/components.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<nav class="navbar" id="navbar">
+  <div class="container navbar-container">
+    <a href="/" class="navbar-logo">
+      <div class="logo-wrapper">
+        <img src="/assets/images/logo.png" alt="Sarhan Indicators Logo" />
+      </div>
+      <div class="brand-text">
+        <span class="brand-main en-text">Sarhan</span>
+        <span class="brand-sub en-text">Indicators</span>
+      </div>
+    </a>
+
+    <div class="navbar-links" id="navLinks">
+      <a href="/#home" class="nav-link active" data-i18n="nav.home">الرئيسية</a>
+      <div class="nav-dropdown">
+        <span class="nav-link"><span data-i18n="nav.indicators">المؤشرات</span> <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg></span>
+        <div class="dropdown-content glass-card">
+          <a href="/x-trend-pro">X TREND PRO</a>
+          <a href="/smart-map">SARHAN SMART MAP</a>
+        </div>
+      </div>
+      <a href="/#pricing" class="nav-link" data-i18n="nav.pricing">الأسعار</a>
+      <a href="/#faq" class="nav-link" data-i18n="nav.faq">الأسئلة الشائعة</a>
+    </div>
+
+    <div class="navbar-actions">
+      <button class="lang-toggle" id="langToggle" onclick="window.i18n && window.i18n.setLanguage(window.i18n.getLang() === 'ar' ? 'en' : 'ar')">EN</button>
+      <a href="/login" class="btn btn-primary btn-sm btn-glow" id="loginBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span data-i18n="nav.login">تسجيل الدخول</span>
+      </a>
+      
+      <button class="navbar-hamburger" id="hamburger" aria-label="Menu">
+        <div class="ham-inner">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</nav>

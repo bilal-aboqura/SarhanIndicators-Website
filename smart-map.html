@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SARHAN SMART MAP — Sarhan Indicators</title>
+    <meta name="description" content="مؤشر SARHAN SMART MAP — مؤشر التحليل المتقدم المبني على مفاهيم SMC لتحليل هيكل السوق بدقة.">
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="stylesheet" href="/src/index.css">
+    <script type="module" src="/src/i18n.js"></script>
+    <script type="module" src="/src/components.js"></script>
+    <style>
+        .deep-dive-page {
+            padding-top: calc(var(--navbar-height) + var(--sp-3xl));
+        }
+
+        .deep-dive-hero {
+            text-align: center;
+            padding: var(--sp-4xl) 0;
+            position: relative;
+        }
+
+        .deep-dive-hero::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0,201,167,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .deep-dive-hero h1 {
+            font-size: var(--fs-hero);
+            font-weight: var(--fw-black);
+            font-family: var(--ff-en);
+            margin-bottom: var(--sp-lg);
+        }
+
+        .deep-dive-hero p {
+            font-size: var(--fs-h3);
+            color: var(--clr-text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .feature-block {
+            padding: var(--sp-4xl) 0;
+        }
+
+        .feature-block .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-4xl);
+            align-items: center;
+        }
+
+        .feature-text h3 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: var(--fw-black);
+            margin-bottom: var(--sp-lg);
+            color: var(--clr-text);
+            line-height: 1.4;
+        }
+
+        .feature-text p {
+            font-size: var(--fs-body);
+            color: var(--clr-text-secondary);
+            line-height: 1.9;
+            margin-bottom: var(--sp-md);
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid var(--clr-border);
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: var(--shadow-md);
+        }
+
+        .carousel-images {
+            position: relative;
+            width: 100%;
+            padding-top: 65%; 
+        }
+
+        .carousel-images img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--radius-xl);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .carousel-images img.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        html[dir="rtl"] .carousel-controls {
+            flex-direction: row-reverse;
+        }
+
+        .carousel-btn {
+            pointer-events: auto;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--trans-base);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .carousel-btn:hover {
+            background: var(--clr-primary);
+            color: #fff;
+            transform: scale(1.1);
+            border-color: var(--clr-primary);
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+        }
+
+        .deep-dive-cta {
+            text-align: center;
+            padding: var(--sp-4xl) var(--sp-lg);
+            margin: var(--sp-4xl) auto;
+        }
+
+        .deep-dive-cta h2 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: var(--fw-black);
+            margin-bottom: var(--sp-lg);
+            line-height: 1.4;
+            color: #fff;
+        }
+
+        @media (max-width: 992px) {
+            .feature-block .container {
+                grid-template-columns: 1fr;
+                gap: var(--sp-xl);
+            }
+            .mobile-reverse {
+                display: flex;
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div id="navbar-placeholder"></div>
+
+        <div class="deep-dive-page">
+            <!-- Hero -->
+            <section class="deep-dive-hero">
+                <div class="container">
+                    <h1 class="reveal en-text" style="font-size: clamp(2.5rem, 6vw, 4rem); letter-spacing: 0.05em; background: linear-gradient(to right, #fff, var(--clr-primary)); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SARHAN SMART MAP</h1>
+                    <p class="reveal" data-i18n="smartmapPage.subtitle" style="font-size: 1.5rem; font-weight: var(--fw-medium); color: var(--clr-primary); margin-top: 10px;">مؤشر تحليل (SMC)</p>
+                </div>
+            </section>
+
+            <!-- Feature 1: FVG & Order Blocks (Image Right, Text Left) -->
+            <section class="feature-block">
+                <div class="container mobile-reverse reveal">
+                    <!-- Right column: Image Slider -->
+                    <div class="carousel-container" id="carousel1">
+                        <div class="carousel-images">
+                            <img src="/assets/images/smartmap-slider1-1.png" class="active" alt="SMART MAP Slide 1">
+                            <img src="/assets/images/smartmap-slider1-2.png" alt="SMART MAP Slide 2">
+                            <img src="/assets/images/smartmap-slider1-3.png" alt="SMART MAP Slide 3">
+                        </div>
+                        <div class="carousel-controls">
+                            <button class="carousel-btn" onclick="moveCarousel('carousel1', -1)">&#10094;</button>
+                            <button class="carousel-btn" onclick="moveCarousel('carousel1', 1)">&#10095;</button>
+                        </div>
+                    </div>
+
+                    <!-- Left column: Text -->
+                    <div class="feature-text">
+                        <h3 data-i18n="smartmapPage.feature2Title" style="display:none;">الفجوات السعرية ومناطق الأوردر بلوك</h3>
+                        <p>المؤشر يقوم بتحديد جميع الفجوات السعرية (FVG) على الشارت، بالإضافة إلى مناطق الـ Order Blocks بدقة عالية.</p>
+                        <p>كما يوضّح نسبة المشترين والبائعين داخل كل Order Block، مما يساعدك على تمييز المناطق القوية والفعّالة، ومعرفة أين يتواجد الاهتمام الحقيقي لصناع السوق قبل اتخاذ قرار الدخول.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feature 2: Market Structure (Image Left, Text Right) -->
+            <section class="feature-block">
+                <div class="container reveal">
+                    <!-- Right column: Text -->
+                    <div class="feature-text">
+                        <h3 data-i18n="smartmapPage.feature1Title" style="display:none;">هيكل السوق بشكل واضح ودقيق</h3>
+                        <p>المؤشر يحدد لك هيكل السوق الداخلي والخارجي بشكل واضح ودقيق، مما يساعدك على فهم الاتجاه الحقيقي للسعر، والتمييز بين الحركة التصحيحية والتغير الفعلي في الاتجاه.</p>
+                        <p>من خلال توضيح البنية السعرية على أكثر من مستوى، تقدر تشوف الصورة الكاملة للسوق وتتخذ قراراتك بثقة، بدون تخمين أو تعقيد في التحليل.</p>
+                    </div>
+
+                    <!-- Left column: Image Slider -->
+                    <div class="carousel-container" id="carousel2">
+                        <div class="carousel-images">
+                            <img src="/assets/images/smartmap-slider2-1.png" class="active" alt="SMART MAP Slide 1">
+                            <img src="/assets/images/smartmap-slider2-2.png" alt="SMART MAP Slide 2">
+                            <img src="/assets/images/smartmap-slider2-3.png" alt="SMART MAP Slide 3">
+                        </div>
+                        <div class="carousel-controls">
+                            <button class="carousel-btn" onclick="moveCarousel('carousel2', -1)">&#10094;</button>
+                            <button class="carousel-btn" onclick="moveCarousel('carousel2', 1)">&#10095;</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feature 3: Liquidity (Image Right, Text Left) -->
+            <section class="feature-block">
+                <div class="container mobile-reverse reveal">
+                    <!-- Right column: Image Slider -->
+                    <div class="carousel-container" id="carousel3">
+                        <div class="carousel-images">
+                            <img src="/assets/images/smartmap-slider3-1.png" class="active" alt="SMART MAP Slide 1">
+                            <img src="/assets/images/smartmap-slider3-2.png" alt="SMART MAP Slide 2">
+                            <img src="/assets/images/smartmap-slider3-3.png" alt="SMART MAP Slide 3">
+                        </div>
+                        <div class="carousel-controls">
+                            <button class="carousel-btn" onclick="moveCarousel('carousel3', -1)">&#10094;</button>
+                            <button class="carousel-btn" onclick="moveCarousel('carousel3', 1)">&#10095;</button>
+                        </div>
+                    </div>
+
+                    <!-- Left column: Text -->
+                    <div class="feature-text">
+                        <h3 data-i18n="smartmapPage.feature3Title" style="display:none;">مناطق السيولة وجلسات التداول</h3>
+                        <p>كما يحدد المؤشر مناطق تجمع السيولة مثل القمم والقيعان المتساوية، مما يساعدك على تجنّب أفخاخ صُنّاع السوق والحركات الوهمية قبل الانطلاق الحقيقي للسعر.</p>
+                        <p>بالإضافة إلى ذلك، يوضّح مناطق الـ Premium والـ Discount، وهي مناطق سعرية قوية يرتد منها السعر في أغلب الأحيان، مما يمنحك أفضلية واضحة في توقيت الدخول والخروج وكمان بيحددلك جلسات التداول.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA -->
+            <section class="deep-dive-cta reveal">
+                <div class="container">
+                    <h2 style="line-height: 1.4; margin-bottom: var(--sp-2xl);">
+                        <span data-i18n="smartmapPage.ctaTitle">كل الأدوات دي في مؤشر واحد</span><br/>
+                        <span class="en-text text-gradient-primary" style="font-weight: 900;">SARHAN SMART MAP</span>
+                    </h2>
+                    <a href="/index.html#pricing" class="btn btn-primary btn-lg" style="padding: 18px 50px; border-radius: 50px; display: inline-flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <span style="font-size: 1.3rem; font-weight: bold;" data-i18n="smartmapPage.ctaBtn">اشترك الان</span>
+                        <span style="font-size: 0.95rem; font-weight: normal;">وابدأ التداول بثقة</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+    <script>
+        window.moveCarousel = function(id, step) {
+            const container = document.getElementById(id);
+            if(!container) return;
+            const images = container.querySelectorAll('.carousel-images img');
+            if(images.length === 0) return;
+            
+            let activeIndex = 0;
+            images.forEach((img, i) => {
+                if (img.classList.contains('active')) {
+                    activeIndex = i;
+                    img.classList.remove('active');
+                }
+            });
+            activeIndex = (activeIndex + step + images.length) % images.length;
+            images[activeIndex].classList.add('active');
+        };
+    </script>
+</body>
+</html>

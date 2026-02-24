@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رأيك يهمنا — Sarhan Indicators</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="stylesheet" href="/src/index.css">
+    <script type="module" src="/src/i18n.js"></script>
+    <script type="module" src="/src/components.js"></script>
+    <style>
+        .review-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(var(--navbar-height) + var(--sp-2xl)) var(--sp-lg) var(--sp-2xl);
+            background: radial-gradient(circle at 50% 0%, rgba(30,41,59,0.4) 0%, transparent 70%);
+        }
+        .review-container {
+            width: 100%;
+            max-width: 540px;
+        }
+        .review-card {
+            background: var(--clr-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-xl);
+            padding: var(--sp-3xl);
+        }
+        .review-header {
+            text-align: center;
+            margin-bottom: var(--sp-2xl);
+        }
+        .review-header h1 {
+            font-size: var(--fs-h2);
+            font-weight: var(--fw-bold);
+            margin-bottom: var(--sp-sm);
+        }
+        .review-header p {
+            color: var(--clr-text-secondary);
+            font-size: var(--fs-small);
+        }
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: var(--sp-xl);
+            direction: ltr;
+        }
+        .star-rating button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            transition: transform 0.2s ease;
+        }
+        .star-rating button:hover {
+            transform: scale(1.2);
+        }
+        .star-rating svg {
+            width: 32px;
+            height: 32px;
+            transition: all 0.2s ease;
+        }
+        .star-rating .star-empty {
+            fill: rgba(255,255,255,0.1);
+            stroke: rgba(255,255,255,0.2);
+        }
+        .star-rating .star-filled {
+            fill: #fbbf24;
+            stroke: #f59e0b;
+        }
+        .form-group {
+            margin-bottom: var(--sp-lg);
+        }
+        .form-group label {
+            display: block;
+            font-size: var(--fs-small);
+            font-weight: var(--fw-semibold);
+            color: var(--clr-text-secondary);
+            margin-bottom: var(--sp-sm);
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: var(--sp-md) var(--sp-lg);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            color: var(--clr-text);
+            font-size: var(--fs-body);
+            transition: all var(--trans-fast);
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--clr-accent);
+            background: rgba(255,255,255,0.06);
+            box-shadow: 0 0 0 3px rgba(91,141,239,0.1);
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--clr-text-muted);
+        }
+        .review-submit {
+            width: 100%;
+            padding: var(--sp-md) var(--sp-xl);
+            border-radius: var(--radius-pill);
+            font-weight: var(--fw-semibold);
+            font-size: var(--fs-body);
+            transition: all var(--trans-base);
+            background: var(--grad-accent);
+            color: white;
+            box-shadow: var(--shadow-glow-accent);
+            cursor: pointer;
+            border: none;
+        }
+        .review-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(91,141,239,0.35);
+        }
+        .review-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .review-error {
+            background: rgba(255,68,68,0.1);
+            border: 1px solid rgba(255,68,68,0.2);
+            border-radius: var(--radius-md);
+            padding: var(--sp-md);
+            margin-bottom: var(--sp-lg);
+            color: #ff6b6b;
+            font-size: var(--fs-small);
+            display: none;
+        }
+        .success-state {
+            text-align: center;
+            padding: var(--sp-2xl) 0;
+            display: none;
+        }
+        .success-state .success-icon {
+            font-size: 3rem;
+            margin-bottom: var(--sp-lg);
+        }
+        .success-state h2 {
+            font-size: var(--fs-h2);
+            margin-bottom: var(--sp-md);
+        }
+        .success-state p {
+            color: var(--clr-text-secondary);
+            margin-bottom: var(--sp-xl);
+            line-height: 1.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div id="navbar-placeholder"></div>
+
+        <div class="review-page">
+            <div class="review-container">
+                <div class="review-card">
+                    <!-- Form State -->
+                    <div id="formState">
+                        <div class="review-header">
+                            <h1 data-i18n="review.title">رأيك يهمنا</h1>
+                            <p data-i18n="review.subtitle">ساعدنا في التحسن وشارك تجربتك مع مؤشرات Sarhan Indicators</p>
+                        </div>
+
+                        <div class="review-error" id="errorMsg"></div>
+
+                        <!-- Star Rating -->
+                        <div class="star-rating" id="starRating">
+                            <button type="button" data-rating="1" aria-label="1 star">
+                                <svg viewBox="0 0 24 24" stroke-width="1.5"><polygon class="star-empty" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </button>
+                            <button type="button" data-rating="2" aria-label="2 stars">
+                                <svg viewBox="0 0 24 24" stroke-width="1.5"><polygon class="star-empty" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </button>
+                            <button type="button" data-rating="3" aria-label="3 stars">
+                                <svg viewBox="0 0 24 24" stroke-width="1.5"><polygon class="star-empty" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </button>
+                            <button type="button" data-rating="4" aria-label="4 stars">
+                                <svg viewBox="0 0 24 24" stroke-width="1.5"><polygon class="star-empty" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </button>
+                            <button type="button" data-rating="5" aria-label="5 stars">
+                                <svg viewBox="0 0 24 24" stroke-width="1.5"><polygon class="star-empty" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </button>
+                        </div>
+
+                        <form id="reviewForm">
+                            <div class="form-group">
+                                <label data-i18n="review.nameLabel">الاسم / اللقب</label>
+                                <input type="text" id="reviewName" required data-i18n-placeholder="review.namePlaceholder" placeholder="كيف نحب أن نناديك؟">
+                            </div>
+                            <div class="form-group">
+                                <label data-i18n="review.messageLabel">رسالتك لنا</label>
+                                <textarea id="reviewMessage" required data-i18n-placeholder="review.messagePlaceholder" placeholder="اوصف تجربتك مع المؤشرات والنقاط التي نالت إعجابك..."></textarea>
+                            </div>
+                            <button type="submit" class="review-submit" id="submitBtn" data-i18n="review.submit">إرسال التقييم</button>
+                        </form>
+                    </div>
+
+                    <!-- Success State -->
+                    <div class="success-state" id="successState">
+                        <div class="success-icon">🎉</div>
+                        <h2 data-i18n="review.successTitle">شكراً جزيلاً!</h2>
+                        <p data-i18n="review.successText">كلماتك تعني لنا الكثير. تم استلام تقييمك وسوف يظهر على صفحتنا الرئيسية فور مراجعته.</p>
+                        <a href="/" class="btn btn-primary" data-i18n="review.backHome">العودة للرئيسية</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let selectedRating = 0;
+            const starRating = document.getElementById('starRating');
+            const form = document.getElementById('reviewForm');
+            const errorMsg = document.getElementById('errorMsg');
+            const submitBtn = document.getElementById('submitBtn');
+            const t = () => window.i18n ? window.i18n.t : (k) => k;
+
+            // Star rating
+            starRating.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selectedRating = parseInt(btn.dataset.rating);
+                    updateStars();
+                });
+                btn.addEventListener('mouseenter', () => {
+                    highlightStars(parseInt(btn.dataset.rating));
+                });
+            });
+
+            starRating.addEventListener('mouseleave', () => {
+                updateStars();
+            });
+
+            function updateStars() {
+                highlightStars(selectedRating);
+            }
+
+            function highlightStars(count) {
+                starRating.querySelectorAll('polygon').forEach((star, i) => {
+                    if (i < count) {
+                        star.classList.remove('star-empty');
+                        star.classList.add('star-filled');
+                    } else {
+                        star.classList.remove('star-filled');
+                        star.classList.add('star-empty');
+                    }
+                });
+            }
+
+            // Form submit
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorMsg.style.display = 'none';
+                const tFn = t();
+
+                if (!selectedRating) {
+                    errorMsg.textContent = tFn('review.selectRating');
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+
+                submitBtn.textContent = tFn('review.submitting');
+                submitBtn.disabled = true;
+
+                try {
+                    const res = await fetch('/api/testimonials', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: document.getElementById('reviewName').value,
+                            comment: document.getElementById('reviewMessage').value,
+                            rating: selectedRating
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const data = await res.json();
+                        throw new Error(data.message || tFn('review.error'));
+                    }
+
+                    document.getElementById('formState').style.display = 'none';
+                    document.getElementById('successState').style.display = 'block';
+                } catch (err) {
+                    errorMsg.textContent = err.message || tFn('review.connectionError');
+                    errorMsg.style.display = 'block';
+                    submitBtn.textContent = tFn('review.submit');
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

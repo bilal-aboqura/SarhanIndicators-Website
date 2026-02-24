@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sarhan Indicators — ابدأ التداول بدقة الخوارزميات</title>
+    <meta
+      name="description"
+      content="مؤشرات تداول متطورة على TradingView. مؤشر الصفقات X TREND PRO ومؤشر التحليل SARHAN SMART MAP — أدوات احترافية لتداول أذكى."
+    />
+    <link rel="icon" type="image/png" href="/assets/images/logo.png" />
+    <link rel="stylesheet" href="/src/index.css" />
+    <script type="module" src="/src/i18n.js"></script>
+    <script type="module" src="/src/components.js"></script>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <!-- ===== NAVBAR ===== -->
+      <div id="navbar-placeholder"></div>
+
+
+      <!-- ===== HERO ===== -->
+      <section class="hero" id="home">
+        <div class="hero-centered-content">
+          <div class="hero-badge reveal">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="8" fill="#059669"/>
+              <path d="M11.5 5.5L6.5 10.5L4.5 8.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="hero.badge"><span class="en-text">2000+</span> متداول يستخدم المؤشرات على <span class="en-text">TradingView</span></span>
+          </div>
+          
+          <h1 class="hero-title reveal" data-i18n="hero.title">
+            ابدأ التداول بدقة المؤشرات
+          </h1>
+          
+          <p class="hero-subtitle reveal" data-i18n="hero.subtitle">
+            احصل على إشارات دخول وخروج دقيقة مبنية على تحليل فني متقدم. مؤشراتنا مصممة لتقليل الضوضاء وزيادة احتمالية الأرباح في أسواق المال
+          </p>
+          
+          <a href="#indicators" class="btn btn-primary btn-hero reveal" data-i18n="hero.cta">
+            اكتشف المؤشرات الآن
+          </a>
+
+          <!-- Indicator label -->
+          <div class="hero-indicator-label reveal">
+            <h2 class="en-text hero-indicator-name">X TREND PRO</h2>
+            <p class="hero-indicator-tag" data-i18n="xtrend.tag">مؤشر الصفقات</p>
+          </div>
+          
+          <!-- Responsive chart images: AR desktop=img1, AR mobile=img5, EN desktop=img2, EN mobile=img6 -->
+          <div class="hero-chart-wrapper reveal">
+            <!-- Arabic images -->
+            <picture class="hero-chart-ar">
+              <source media="(max-width: 767px)" srcset="/assets/images/x-trend-hero-5.png">
+              <img src="/assets/images/x-trend-hero-1.png" alt="X TREND PRO مؤشر الصفقات" class="hero-main-chart" />
+            </picture>
+            <!-- English images -->
+            <picture class="hero-chart-en">
+              <source media="(max-width: 767px)" srcset="/assets/images/x-trend-hero-6.png">
+              <img src="/assets/images/x-trend-hero-2.png" alt="X TREND PRO Trade Signals" class="hero-main-chart" />
+            </picture>
+          </div>
+
+          <!-- X TREND PRO description block below the image -->
+          <div class="hero-indicator-desc reveal">
+            <div class="hero-desc-header">
+              <div class="hero-desc-strategies">
+                <span class="strategy-tag">Trend</span>
+                <span class="strategy-sep">—</span>
+                <span class="strategy-tag">Breakout</span>
+                <span class="strategy-sep">—</span>
+                <span class="strategy-tag">Pullback</span>
+              </div>
+              <p class="hero-desc-lead" data-i18n="hero.indicatorDesc">
+                مؤشر مُطور بيعتمد على دمج 3 استراتيجيات قوية في وقت واحد
+              </p>
+            </div>
+
+            <ul class="hero-indicator-features">
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="hero.indicatorF1">بيحدد نقطة دخول مؤكدة بعد توافق الاستراتيجيات.</span>
+              </li>
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="hero.indicatorF2">نسبة نجاح ممكن توصل لـ <strong>75%</strong> مع الالتزام بالتعليمات.</span>
+              </li>
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="hero.indicatorF3">مزود بنظام التارجت سيستم اللي بيحدد الدخول والهدف والاستوب تلقائيًا فور ظهور الإشارة.</span>
+              </li>
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="hero.indicatorF4">بيساعدك تنفّذ الصفقة فورًا بدون ما تحسب أي مستويات أو تعمل اجتهاد شخصي.</span>
+              </li>
+            </ul>
+
+            <div class="hero-desc-footer">
+              <a href="/x-trend-pro" class="hero-learn-more-btn">
+                <span data-i18n="hero.learnMore">تعرف أكثر عن</span>
+                <span class="en-text hero-btn-name"> X TREND PRO</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- ===== SARHAN SMART MAP Block ===== -->
+          <div class="hero-indicator-label hero-section-gap reveal">
+            <h2 class="en-text hero-indicator-name">SARHAN SMART MAP</h2>
+            <p class="hero-indicator-tag" data-i18n="smartmap.tag">مؤشر تحليل SMC</p>
+          </div>
+
+          <div class="hero-chart-wrapper reveal">
+            <picture class="hero-chart-ar">
+              <source media="(max-width: 767px)" srcset="/assets/images/x-trend-hero-7.png">
+              <img src="/assets/images/x-trend-hero-3.png" alt="SARHAN SMART MAP مؤشر تحليل SMC" class="hero-main-chart" />
+            </picture>
+            <picture class="hero-chart-en">
+              <source media="(max-width: 767px)" srcset="/assets/images/x-trend-hero-8.png">
+              <img src="/assets/images/x-trend-hero-4.png" alt="SARHAN SMART MAP SMC Analysis" class="hero-main-chart" />
+            </picture>
+          </div>
+
+          <div class="hero-indicator-desc reveal">
+            <div class="hero-desc-header">
+              <div class="hero-desc-strategies">
+                <span class="strategy-tag">Smart Money</span>
+                <span class="strategy-sep">+</span>
+                <span class="strategy-tag">Price Action</span>
+              </div>
+              <p class="hero-desc-lead" data-i18n="smartmap.desc">
+                أداة تحليل متكاملة مبنية على Smart Money + Price Action وتشرح حركة السوق بشكل واضح.
+              </p>
+            </div>
+
+            <ul class="hero-indicator-features">
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="smartmap.f1">الهيكل السعري <strong>(BOS / CHoCH)</strong></span>
+              </li>
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="smartmap.f2">الـ <strong>Order Blocks</strong></span>
+              </li>
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="smartmap.f3">فجوات القيمة العادلة <strong>(FVG)</strong></span>
+              </li>
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="smartmap.f4">مناطق السيولة <strong>(Liquidity Grabs)</strong> · جلسات التداول</span>
+              </li>
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="smartmap.f5"><strong>Premium &amp; Discount Zones</strong> · الاتجاه العام + الموفينج أفريج</span>
+              </li>
+              <li>
+                <span class="feature-dot"></span>
+                <span data-i18n="smartmap.f6">مستويات السيولة <strong>(Buy Side / Sell Side)</strong></span>
+              </li>
+            </ul>
+
+            <div class="hero-desc-footer">
+              <a href="/sarhan-smart-map#sarhan-smart-map" class="hero-learn-more-btn">
+                <span data-i18n="smartmap.learnMore">تعرف أكثر عن</span>
+                <span class="en-text hero-btn-name"> SARHAN SMART MAP</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+
+      <!-- ===== ONE SYSTEM ===== -->
+      <section class="one-system-banner reveal">
+        <div class="one-system-outer">
+          <div class="one-system-mid">
+            <div class="one-system-inner">
+              <p class="one-system-line1" data-i18n="onesystem.line1">نظام واحد</p>
+              <p class="one-system-line1" data-i18n="onesystem.line2">هو كل ما تحتاجه</p>
+            </div>
+          </div>
+        </div>
+        <!-- horizontal lines extending left/right -->
+        <span class="one-system-rail one-system-rail-left"></span>
+        <span class="one-system-rail one-system-rail-right"></span>
+      </section>
+
+      <!-- ===== MOTIVATIONAL CTA ===== -->
+      <section class="motive-section reveal">
+        <div class="container">
+          <div class="motive-eyebrows">
+            <span class="motive-eyebrow">انظر إلى السوق</span>
+            <span class="motive-dot">·</span>
+            <span class="motive-eyebrow">اقرأ السوق بدقة</span>
+          </div>
+
+          <h2 class="motive-headline">
+            "تداول كالمحترفين،<br>حتى لو لم تملك الوقت الكافي"
+          </h2>
+
+          <div class="motive-body-wrapper">
+            <p class="motive-lead">
+              المتداول الناجح ليس من يقضي <span class="highlight-time">24 ساعة</span> أمام الشاشات،
+              بل من يملك الأدوات التي تلخص له السوق في <strong class="highlight-signal">إشارة واحدة دقيقة</strong>.
+            </p>
+            <div class="motive-divider"></div>
+            <p class="motive-desc">
+              مؤشرات <strong class="en-text">SARHAN INDICATORS</strong> صُممت لتوفر عليك ساعات من التحليل المرهق، لتعطيك الخلاصة التي تحتاجها لاتخاذ قرارك بثقة.
+            </p>
+          </div>
+
+          <a href="#pricing" class="motive-cta">
+            اختر خطتك الآن وانضم لنخبة المتداولين
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </section>
+
+      <!-- ===== SOCIAL PROOF ===== -->
+      <section class="social-proof section" id="social-proof">
+        <div class="container">
+          <div class="social-stats reveal">
+            <div class="stat-item">
+              <div class="number text-gradient-primary">200+</div>
+              <div class="label" data-i18n="social.traders">متداول يستخدم المؤشرات</div>
+            </div>
+            <div class="stat-item">
+              <div class="number text-gradient-accent">75%</div>
+              <div class="label" data-i18n="social.successRate">نسبة نجاح الإشارات</div>
+            </div>
+            <div class="stat-item">
+              <div class="number text-gradient-primary">24/7</div>
+              <div class="label" data-i18n="social.support">دعم فني متواصل</div>
+            </div>
+          </div>
+
+          <div class="social-actions reveal" style="text-align: center; margin-bottom: var(--sp-2xl);">
+            <a href="/review" class="btn btn-outline" style="border-radius: 50px; padding: 12px 30px;" data-i18n="social.shareReview">
+              <span style="margin-left: 8px;">★</span> شاركنا رأيك
+            </a>
+          </div>
+
+          <div class="testimonials-track reveal" id="testimonialsTrack">
+            <!-- Dynamic Testimonials will be loaded here -->
+            <div style="text-align:center; padding: 40px; color: var(--clr-text-muted); width: 100%;" data-i18n="social.loading">
+              جاري تحميل آراء المتداولين...
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PRICING ===== -->
+      <section class="pricing section" id="pricing">
+        <div class="container">
+          <div class="pricing-header reveal">
+            <h2 data-i18n="pricing.header">اختار الباقة المناسبة لك</h2>
+          </div>
+
+          <div class="pricing-toggles reveal">
+            <div class="toggle-group" id="billingToggle">
+              <button class="active" data-billing="yearly" data-i18n="pricing.yearly">سنويا</button>
+              <button data-billing="monthly" data-i18n="pricing.monthly">شهريا</button>
+            </div>
+            <div class="toggle-group" id="currencyToggle">
+              <button
+                class="active"
+                data-currency="usd"
+                style="font-family: var(--ff-en)"
+              >
+                USD
+              </button>
+              <button data-currency="egp" style="font-family: var(--ff-en)">
+                EGP
+              </button>
+            </div>
+          </div>
+
+          <div class="pricing-grid">
+            <!-- X TREND PRO Plan -->
+            <div class="pricing-card glass-card reveal" data-plan="x-trend-pro">
+              <span class="plan-badge basic">Basic</span>
+              <h3 class="plan-name">X TREND PRO</h3>
+              <p class="plan-subtitle" data-i18n="pricing.planSubtitle.xtrend">مؤشر الصفقات</p>
+              <div class="price">
+                <span
+                  class="old-price"
+                  data-yearly-usd="$120"
+                  data-monthly-usd=""
+                  data-yearly-egp="6000 EGP"
+                  data-monthly-egp=""
+                ></span>
+                <span
+                  class="discount"
+                  data-yearly="+30% خصم"
+                  data-monthly=""
+                ></span>
+                <br />
+                <span
+                  class="amount"
+                  data-yearly-usd="$80"
+                  data-monthly-usd="$40"
+                  data-yearly-egp="4000 EGP"
+                  data-monthly-egp="2000 EGP"
+                ></span>
+                <span
+                  class="period"
+                  data-yearly="/ سنويا"
+                  data-monthly="/ شهريا"
+                  >/ سنويا</span
+                >
+              </div>
+              <ul class="features-list">
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.fullAccessXtrend">وصول كامل لمؤشر X TREND PRO</span>
+                </li>
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.videoLessons">دروس فيديو تعليمية</span>
+                </li>
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.support">دعم فني 24 ساعة</span>
+                </li>
+              </ul>
+              <button
+                class="btn btn-primary subscribe-btn"
+                data-plan-id="x-trend-pro"
+                data-i18n="pricing.subscribe"
+              >
+                اشترك الان
+              </button>
+            </div>
+
+            <!-- BOTH — Pro Plan (Featured) -->
+            <div
+              class="pricing-card glass-card featured reveal"
+              data-plan="both"
+            >
+              <span class="plan-badge pro" data-i18n="pricing.proBadge">Pro — الأفضل قيمة</span>
+              <h3 class="plan-name">BOTH INDICATORS</h3>
+              <p class="plan-subtitle" data-i18n="pricing.planSubtitle.both">المؤشرين معًا</p>
+              <div class="price">
+                <span
+                  class="old-price"
+                  data-yearly-usd="$240"
+                  data-monthly-usd=""
+                  data-yearly-egp="12000 EGP"
+                  data-monthly-egp=""
+                ></span>
+                <span
+                  class="discount"
+                  data-yearly="50% خصم"
+                  data-monthly=""
+                ></span>
+                <br />
+                <span
+                  class="amount"
+                  data-yearly-usd="$120"
+                  data-monthly-usd="$70"
+                  data-yearly-egp="6000 EGP"
+                  data-monthly-egp="3500 EGP"
+                ></span>
+                <span
+                  class="period"
+                  data-yearly="/ سنويا"
+                  data-monthly="/ شهريا"
+                  >/ سنويا</span
+                >
+              </div>
+              <ul class="features-list">
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.fullAccessXtrendShort">وصول كامل لـ X TREND PRO</span>
+                </li>
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.fullAccessSmartmapShort">وصول كامل لـ SARHAN SMART MAP</span>
+                </li>
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.videoLessons">دروس فيديو تعليمية</span>
+                </li>
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.support">دعم فني 24 ساعة</span>
+                </li>
+              </ul>
+              <button
+                class="btn btn-highlight subscribe-btn"
+                data-plan-id="both"
+                data-i18n="pricing.subscribe"
+              >
+                اشترك الان
+              </button>
+            </div>
+
+            <!-- SARHAN SMART MAP Plan -->
+            <div class="pricing-card glass-card reveal" data-plan="smart-map">
+              <span class="plan-badge basic">Basic</span>
+              <h3 class="plan-name">SARHAN SMART MAP</h3>
+              <p class="plan-subtitle" data-i18n="pricing.planSubtitle.smartmap">مؤشر التحليل (SMC)</p>
+              <div class="price">
+                <span
+                  class="old-price"
+                  data-yearly-usd="$120"
+                  data-monthly-usd=""
+                  data-yearly-egp="6000 EGP"
+                  data-monthly-egp=""
+                ></span>
+                <span
+                  class="discount"
+                  data-yearly="+30% خصم"
+                  data-monthly=""
+                ></span>
+                <br />
+                <span
+                  class="amount"
+                  data-yearly-usd="$80"
+                  data-monthly-usd="$40"
+                  data-yearly-egp="4000 EGP"
+                  data-monthly-egp="2000 EGP"
+                ></span>
+                <span
+                  class="period"
+                  data-yearly="/ سنويا"
+                  data-monthly="/ شهريا"
+                  >/ سنويا</span
+                >
+              </div>
+              <ul class="features-list">
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.fullAccessSmartmap">وصول كامل لمؤشر SARHAN SMART MAP</span>
+                </li>
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.videoLessons">دروس فيديو تعليمية</span>
+                </li>
+                <li>
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span data-i18n="pricing.feature.support">دعم فني 24 ساعة</span>
+                </li>
+              </ul>
+              <button
+                class="btn btn-primary subscribe-btn"
+                data-plan-id="smart-map"
+                data-i18n="pricing.subscribe"
+              >
+                اشترك الان
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FAQ ===== -->
+      <section class="faq section" id="faq">
+        <div class="container">
+          <div class="faq-header reveal">
+            <h2 data-i18n="faq.header">الاسئلة الشائعه</h2>
+          </div>
+
+          <div class="faq-list">
+            <div class="faq-item reveal">
+              <div class="faq-question">
+                <span data-i18n="faq.q1">هل يمكنني استخدام مخططات sarhan مع النسخة المجانية من
+                  TradingView؟</span>
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-inner" data-i18n="faq.a1">
+                  نعم! جميع أدوات SARHAN INDICATORS تعمل مع النسخة المجانية من
+                  TradingView. ما عليك سوى التسجيل وإدخال اسم المستخدم الخاص بك،
+                  وسنقوم بتفعيل حسابك فورًا.
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item reveal">
+              <div class="faq-question">
+                <span data-i18n="faq.q2">كيف يمكنني الحصول على إمكانية الوصول بعد الاشتراك؟</span>
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-inner" data-i18n="faq.a2">
+                  بعد إتمام عملية الشراء، أدخل اسم مستخدم TradingView الخاص بك،
+                  وسنقوم بتفعيل المؤشرات. ما عليك سوى تحديث صفحة TradingView
+                  وإذا وجهتك أي مشكلة تواصل مع الدعم.
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item reveal">
+              <div class="faq-question">
+                <span data-i18n="faq.q3">في أي أسواق تعمل هذه المؤشرات؟</span>
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-inner" data-i18n="faq.a3">
+                  تعمل مؤشرات sarhan indicators على جميع الأسواق المتاحة في
+                  TradingView — العملات المشفرة، والأسهم، والفوركس، والمؤشرات،
+                  والعقود الآجلة.
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item reveal">
+              <div class="faq-question">
+                <span data-i18n="faq.q4">ما هي الأطر الزمنية التي تعمل عليها المؤشرات؟</span>
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-inner" data-i18n="faq.a4">
+                  تعمل مؤشرات sarhan indicators على جميع الأطر الزمنية، من
+                  الدقيقة الواحدة إلى الشهر. سواء كنت تمارس المضاربة السريعة، أو
+                  التداول اليومي، أو التداول المتأرجح، فإن الأدوات تتكيف مع
+                  استراتيجيتك.
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item reveal">
+              <div class="faq-question">
+                <span data-i18n="faq.q5">كيف يمكنني تعلم التداول باستخدام مؤشرات sarhan
+                  indicators؟</span>
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-inner" data-i18n="faq.a5">
+                  البدء سهل. ستحصل على إمكانية الوصول إلى دروس فيديو تعليمية،
+                  وفصول مباشرة، وشروحات استراتيجية — حتى تتمكن من تعلم الأدوات
+                  وتطبيقها بثقة في تداولاتك.
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item reveal">
+              <div class="faq-question">
+                <span data-i18n="faq.q6">كيف يمكنني الوصول إلى مؤشرات sarhan indicators؟</span>
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </div>
+              <div class="faq-answer">
+                <div class="faq-answer-inner" data-i18n="faq.a6">
+                  للوصول إلى مؤشراتنا المميزة، يجب عليك الاشتراك في إحدى باقات
+                  sarhan indicators. بعد الاشتراك، يمكنك تطبيق المؤشرات على
+                  الرسم البياني الخاص بك على TradingView.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FOOTER ===== -->
+      <div id="footer-placeholder"></div>
+    </div>
+    <!-- .page-wrapper -->
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/testimonials.js"></script>
+  </body>
+</html>
