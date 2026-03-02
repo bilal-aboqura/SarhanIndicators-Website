@@ -94,9 +94,12 @@ app.get('/api/health', (req, res) => {
 if (process.env.NODE_ENV === 'production') {
   const distPath = join(__dirname, '../dist');
   const publicPath = join(__dirname, '../public');
+  const componentsPath = join(__dirname, '../components');
 
-  // Serve the public folder (contains /assets/images, etc.) first
+  // Serve the public folder (contains /assets/images, etc.)
   app.use(express.static(publicPath));
+  // Serve components folder (navbar.html, footer.html fetched dynamically)
+  app.use('/components', express.static(componentsPath));
   // Then serve the built frontend (dist folder)
   app.use(express.static(distPath));
 
