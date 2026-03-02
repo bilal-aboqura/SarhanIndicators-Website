@@ -7,7 +7,7 @@ try {
 
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, extname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -102,18 +102,23 @@ if (process.env.NODE_ENV === 'production') {
 
   // Serve the public folder (contains /assets/images, etc.) first
   app.use(express.static(publicPath));
-  // Then serve the built frontend
+  // Then serve the built frontend (dist folder)
   app.use(express.static(distPath));
 
-  // Handle MPA routing: /login -> login.html, etc.
+  // Handle MPA routing: ONLY intercept requests with no file extension
+  // This prevents returning HTML for CSS/JS/image asset requests
   app.get('*', (req, res) => {
+    const ext = extname(req.path);
+    // If request has a file extension (e.g. .css, .js, .png), it's an asset — skip
+    if (ext) return res.status(404).send('Not found');
+
     if (!req.path.startsWith('/api')) {
-      const possibleFile = req.path === '/' ? 'index.html' : `${req.path.slice(1)}.html`;
-      const filePath = join(distPath, possibleFile);
+      // Map /login -> login.html, / -> index.html
+      const pageName = req.path === '/' ? 'index.html' : `${req.path.slice(1)}.html`;
+      const filePath = join(distPath, pageName);
 
       res.sendFile(filePath, (err) => {
         if (err) {
-          // Fallback to index.html for any unknown route
           res.sendFile(join(distPath, 'index.html'));
         }
       });
