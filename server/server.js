@@ -42,7 +42,9 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 // Global Security & Optimization
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+}));
 app.use(compression());
 
 // Global Rate Limiting
@@ -85,13 +87,21 @@ app.get('/api/health', (req, res) => {
 
 // Serve frontend static files in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(join(__dirname, '../dist')));
+  const distPath = join(__dirname, '../dist');
+  app.use(express.static(distPath));
 
-  // For any route that is not an API, send back the index.html file
-  // Assuming Vite build places index.html in the dist root.
+  // Handle SPA and MPA routing
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
-      res.sendFile(join(__dirname, '../dist/index.html'));
+      // Try to find the specific .html file or fallback to index.html
+      const possibleFile = req.path === '/' ? 'index.html' : `${req.path.slice(1)}.html`;
+      const filePath = join(distPath, possibleFile);
+      
+      res.sendFile(filePath, (err) => {
+        if (err) {
+          res.sendFile(join(distPath, 'index.html'));
+        }
+      });
     }
   });
 }
