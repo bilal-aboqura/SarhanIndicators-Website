@@ -24,6 +24,9 @@ RUN npm install --production
 # Copy built frontend from the build stage
 COPY --from=build /app/dist ./dist
 
+# Copy public assets (images, etc.) — needed for /assets/images in production
+COPY --from=build /app/public ./public
+
 # Copy backend files
 COPY --from=build /app/server ./server
 COPY --from=build /app/package.json ./package.json

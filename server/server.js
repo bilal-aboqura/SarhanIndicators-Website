@@ -58,13 +58,23 @@ app.use('/api/', limiter);
 // Middleware
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, curl, etc)
+    // Allow requests with no origin (mobile apps, curl, Postman, etc)
     if (!origin) return callback(null, true);
     // Allow any localhost port in development
-    if (origin.match(/^http:\/\/localhost:\d+$/)) return callback(null, true);
-    // Allow configured frontend URL
-    const allowed = process.env.FRONTEND_URL || 'http://localhost:5173';
-    if (origin === allowed) return callback(null, true);
+    if (origin.match(/^https?:\/\/localhost(:\d+)?$/)) return callback(null, true);
+    // Build list of allowed origins from env (accepts http and https of the same domain)
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const baseUrl = process.env.BASE_URL || '';
+    const allowedOrigins = [
+      frontendUrl,
+      baseUrl,
+      // also accept the other protocol variant (http <-> https)
+      frontendUrl.replace('https://', 'http://'),
+      frontendUrl.replace('http://', 'https://'),
+      baseUrl.replace('https://', 'http://'),
+      baseUrl.replace('http://', 'https://'),
+    ].filter(Boolean);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
@@ -88,17 +98,22 @@ app.get('/api/health', (req, res) => {
 // Serve frontend static files in production
 if (process.env.NODE_ENV === 'production') {
   const distPath = join(__dirname, '../dist');
+  const publicPath = join(__dirname, '../public');
+
+  // Serve the public folder (contains /assets/images, etc.) first
+  app.use(express.static(publicPath));
+  // Then serve the built frontend
   app.use(express.static(distPath));
 
-  // Handle SPA and MPA routing
+  // Handle MPA routing: /login -> login.html, etc.
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
-      // Try to find the specific .html file or fallback to index.html
       const possibleFile = req.path === '/' ? 'index.html' : `${req.path.slice(1)}.html`;
       const filePath = join(distPath, possibleFile);
-      
+
       res.sendFile(filePath, (err) => {
         if (err) {
+          // Fallback to index.html for any unknown route
           res.sendFile(join(distPath, 'index.html'));
         }
       });
