@@ -17,8 +17,8 @@ services:
       - KASHIER_SECRET_KEY=e2b7717e14a86661138c27ff552aa2a4$$f9ef3475c184e02bd0c284ba7e4c87b6466a62da1cd46474860f67bdf2baed3839dcbd793feabdd9ebd6ee3184aca323
       - KASHIER_MERCHANT_ID=MID-32839-729
       - KASHIER_MODE=test
-      - BASE_URL=http://148.230.112.105:5000
-      - FRONTEND_URL=http://148.230.112.105:5000
+      - BASE_URL=https://sarhanindicators.com
+      - FRONTEND_URL=https://sarhanindicators.com
     depends_on:
       - mongo
 
