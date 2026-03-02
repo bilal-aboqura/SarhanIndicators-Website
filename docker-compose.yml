@@ -19,7 +19,7 @@ services:
     container_name: sarhan_mongo
     restart: always
     ports:
-      - "27017:27017"
+      - "27018:27017" # Changed host port to 27018 to avoid conflict with local mongod
     volumes:
       - mongo_data:/data/db
 
