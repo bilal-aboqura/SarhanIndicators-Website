@@ -58,23 +58,18 @@ app.use('/api/', limiter);
 // Middleware
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, curl, Postman, etc)
+    // Allow requests with no origin (browsers loading same-origin assets, curl, Postman)
     if (!origin) return callback(null, true);
-    // Allow any localhost port in development
+    // Allow any localhost
     if (origin.match(/^https?:\/\/localhost(:\d+)?$/)) return callback(null, true);
-    // Build list of allowed origins from env (accepts http and https of the same domain)
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    const baseUrl = process.env.BASE_URL || '';
-    const allowedOrigins = [
-      frontendUrl,
-      baseUrl,
-      // also accept the other protocol variant (http <-> https)
-      frontendUrl.replace('https://', 'http://'),
-      frontendUrl.replace('http://', 'https://'),
-      baseUrl.replace('https://', 'http://'),
-      baseUrl.replace('http://', 'https://'),
-    ].filter(Boolean);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow direct IP access (e.g. http://148.230.112.105:5000)
+    if (origin.match(/^https?:\/\/\d+\.\d+\.\d+\.\d+(:\d+)?$/)) return callback(null, true);
+    // Allow the configured domain (both http and https)
+    const frontendUrl = process.env.FRONTEND_URL || '';
+    const domain = frontendUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    if (domain && origin.replace(/^https?:\/\//, '').replace(/\/$/, '') === domain) {
+      return callback(null, true);
+    }
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
