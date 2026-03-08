@@ -871,13 +871,15 @@ html[lang="en"] .hero-chart-en {
   border-radius: var(--radius-pill);
   color: var(--clr-accent);
   font-weight: var(--fw-semibold);
-  font-size: 0.95rem;
+  font-size: 0.80rem;
   text-decoration: none;
   transition: all var(--trans-base);
   position: relative;
   overflow: hidden;
-  /* Always LTR inside the button so text + arrow order stays consistent */
-  direction: ltr;
+}
+
+.smart-map-btn {
+  font-size: 0.76rem;
 }
 
 .hero-learn-more-btn::before {
