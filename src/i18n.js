@@ -263,6 +263,15 @@ const translations = {
     'payment.retry': 'حاول مرة أخرى',
     'payment.telegramOnlyDesc': 'أدخل رقم الـ Telegram الخاص بك للإضافة إلى المجموعة الخاصة.',
 
+    // ===== CONTACT US =====
+    'contact.title': 'تواصل معنا',
+    'contact.subtitle': 'نحن هنا للإجابة على جميع استفساراتك ومساعدتك في أي وقت.',
+    'contact.phoneTitle': 'رقم الهاتف / واتساب',
+    'contact.emailTitle': 'البريد الإلكتروني',
+    'contact.addressTitle': 'العنوان',
+    'contact.addressValue': 'القاهره الشروق الحى الاول',
+    'nav.contact': 'تواصل معنا',
+
     // ===== GENERAL =====
     'general.error': 'حدث خطأ. حاول مرة أخرى.',
     'general.connectionError': 'حدث خطأ في الاتصال. حاول مرة أخرى.',
@@ -526,6 +535,15 @@ const translations = {
     'payment.failDesc': 'Sorry, the payment was not successful. You can try again or contact support.',
     'payment.retry': 'Try Again',
     'payment.telegramOnlyDesc': 'Enter your Telegram ID to be added to the private group.',
+
+    // ===== CONTACT US =====
+    'contact.title': 'Contact Us',
+    'contact.subtitle': 'We are here to answer all your questions and help you at any time.',
+    'contact.phoneTitle': 'Phone / WhatsApp',
+    'contact.emailTitle': 'Email Address',
+    'contact.addressTitle': 'Address',
+    'contact.addressValue': '1st District, El Shorouk City, Cairo',
+    'nav.contact': 'Contact Us',
 
     // ===== GENERAL =====
     'general.error': 'An error occurred. Please try again.',
